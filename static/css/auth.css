@@ -1,0 +1,232 @@
+/** @format */
+
+@import url("https://fonts.googleapis.com/css2?family=Gelasio&family=Titillium+Web:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+
+:root {
+  --first-color: #ee0000;
+  --first-color-light: #cccccc;
+  --green-color: #134326;
+  --red-color: #e51e25;
+  --sand-tan: #e1b382;
+  --dark-color: #212121;
+  --olive: #a3bcb6;
+  --white-color: #f7f6fb;
+  --primary-font: "Gelasio", serif;
+  --lato-family: "Lato", sans-serif;
+  --normal-font: "Titillium Web", sans-serif;
+}
+
+.n-login {
+  height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+#n-left {
+  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+    url(../img/bg/1652532127351.jpeg);
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+.rotate-image {
+  animation: rotate 1s linear 4s forwards;
+}
+.rotate-image:hover {
+  animation: rotate;
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+.n-icon {
+  margin-top: 75px;
+  color: white;
+  font-size: 2rem;
+}
+.logo {
+  margin-top: 10px;
+}
+.brand {
+  margin-top: 10px;
+}
+
+.brand h2 {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 50px;
+  font-family: var(--normal-font);
+}
+
+.br-brand {
+  font-weight: bold;
+  color: #abadad;
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+}
+.l-text {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.l-text p {
+  font-family: var(--lato-family);
+  font-size: 16px;
+  align-items: flex-end;
+  color: rgb(219, 219, 219);
+}
+
+.l-image img {
+  max-width: 200px;
+  height: 200px;
+}
+#n-right1 {
+  background-color: whitesmoke;
+}
+#n-right1 .logo {
+  margin-top: 4rem;
+}
+form.sign-in-form {
+  z-index: 2;
+}
+
+.form-text {
+  margin-top: 70px;
+  margin-left: 85px;
+}
+
+.form-text h3 {
+  font-family: var(--lato-family);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 26px;
+  color: var(--primary-color);
+  line-height: 40px;
+  text-transform: uppercase;
+}
+
+.form-text p {
+  font-family: var(--normal-font);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  color: #17171f;
+  line-height: 24px;
+}
+
+.l-form {
+  margin-left: 85px;
+  padding-right: 50px;
+}
+
+label {
+  font-family: var(--lato-family);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #60606a;
+}
+
+.form-control,
+.form-control:focus,
+.input-group-addon {
+  border-color: var(--red-color);
+  border-radius: 0;
+}
+.login-form label {
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.login-form .form-control {
+  min-height: 38px;
+  box-shadow: none !important;
+  border-width: 0 0 1px 0;
+  background-color: whitesmoke;
+}
+
+.login-form .input-group-addon {
+  max-width: 42px;
+  text-align: center;
+  background: none;
+  border-bottom: 1px solid var(--red-color);
+}
+
+.login-form .btn,
+.login-form .btn:active {
+  font-size: 16px;
+  font-weight: bold;
+  background: var(--red-color) !important;
+  border-radius: 3px;
+  border: none;
+  min-width: 140px;
+}
+
+.login-form .btn:hover,
+.login-form .btn:focus {
+  background: var(--red-color) !important;
+}
+
+.login-form a {
+  color: var(--sand-tan);
+  text-decoration: none;
+}
+
+.login-form a:hover {
+  text-decoration: underline;
+}
+
+.login-form .fa {
+  font-size: 21px;
+  position: relative;
+  top: 8px;
+}
+
+.login-form .fa-paper-plane {
+  font-size: 17px;
+}
+
+.login-form .fa-check {
+  color: #fff;
+  left: 9px;
+  top: 18px;
+  font-size: 7px;
+  position: absolute;
+}
+.btn.transparent {
+  margin: 0;
+  background: none;
+  border: 2px solid #fff;
+  width: 200px;
+  height: 41px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.btn {
+  width: 150px;
+  background-color: var(--candy-red);
+  border: none;
+  outline: none;
+  height: 49px;
+  border-radius: 49px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.btn:hover {
+  background-color: var(--red-color);
+  color: #fff;
+}

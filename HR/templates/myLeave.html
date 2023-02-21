@@ -1,0 +1,275 @@
+{% extends 'offcanvas.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bgw" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card card-body data-card">
+                    <h1 class="heading display-5 pb-3"><img src="../../../static/img/logo/fav.png" width="70px"
+                            class="img-fluid"> Leave Requests <span><button class="btn btn-success align-items-center"
+                                style="float: right;">{{today}} <span id="timer"></span></button></span>
+                    </h1>
+                    <div class="row my-2">
+                        <div class="btn-group btn-group-justified pb-2">
+                            <button href="#" class="btn btn-successs" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"> <i class="las la-plus text-white"></i>New Leave
+                                Request</button>
+                            <a href="{% url 'leave' %}" class="btn btn-primary">Leave History <i
+                                    class="las la-history text-white"></i></a>
+                            <a href="#" class="btn btn-success">Leave Planner <i
+                                    class="las la-external-link-alt"></i></a>
+                        </div>
+                    </div>
+                    <div class="row gy-2 top-part">
+                        <div class="col-md-12">
+                            <div class="row g-2">
+                                <div class="col-md-6 m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Available Max Overdraft Days</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Number of Days Taken to Date</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-4  m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Available Leave Balance</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Recalled Days</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Days Absent</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-4 m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Off Days</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Days Carried Forward</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4  m-15px-tb">
+                                    <div
+                                        class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                        <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                            <i class="number"><i class="las la-calendar"></i></i>
+                                        </div>
+                                        <div class="p-20px-l media-body">
+                                            <h6 class="m-5px-tb">Total Available Leave Days</h6>
+                                            <p class="m-0px font-small">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Create leave Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Raise Leave Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm" action="{% url 'leave' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <input type="hidden" name="applicationNo" value="">
+                            <input type="hidden" name="myAction" value="insert">
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <label class="form-label"> Leave Type</label>
+                                    <select class="form-select" name="leaveType" required>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        {% for res in leave %}
+                                        <option value="{{res.Code}}">{{res.Description}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label"> Leave Based on Planner?</label>
+                                    <select class="form-select" id="BasedOnPlanner" name="BasedOnPlanner" required>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3" id="plannerStartDateRow" style="display:none;">
+                                <div class="col-md-12">
+                                    <label class="form-label"> Planner Start Date</label>
+                                    <select class="form-select" id="plannerStartDate" name="plannerStartDate" disabled>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        {% for res in plan %}
+                                        <option value="{{res.Start_Date}}">{{res.Start_Date}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" id="LeaveStartDateRow" style="display:none">
+                                <div class="col-md-12">
+                                    <label for="" class="form-label">Leave Start Date:</label>
+                                    <input type="date" class="form-control" name="plannerStartDate" id="LeaveStartDate"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="isReturnSameDay" class="form-label"> Return Same Day</label>
+                                    <select class="form-select" id="isReturnSameDay" name="isReturnSameDay" required>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2" id="daysAppliedRow" style="display:none;">
+                                <div class="col-md-12">
+                                    <label for="daysApplied" class="form-label">Days Applied</label>
+                                    <input type="number" class="form-control" id="daysApplied" name="daysApplied"
+                                        disabled>
+                                </div>
+                            </div>
+                            <button type="submit" id="sasa" class="btn btn-success my-3 w-100">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function () {
+        // Return Same Day on change to display and hide planner start date
+        $('#isReturnSameDay').on('change', function () {
+            if (this.value == "False") {
+                $('#daysAppliedRow').show(1000)
+                $('#daysApplied').prop('disabled', false);
+            } else if (this.value == "True") {
+                $('#daysApplied').prop('disabled', true);
+                $('#daysAppliedRow').hide(1000)
+            }
+        });
+        $('.EditReturnSameDay').on('change', function () {
+            if (this.value == "False") {
+                $('.EditdayAppliedRow').show(1000)
+                $('.EditdayApplied').prop('disabled', false);
+            } else if (this.value == "True") {
+                $('.EditdayApplied').prop('disabled', true);
+                $('.EditdayAppliedRow').hide(1000)
+            }
+        });
+        // Leave type on change to display and hide planner start date
+        $('#BasedOnPlanner').on('change', function () {
+            if (this.value == "True") {
+                $('#plannerStartDateRow').show(1000)
+                $('#plannerStartDate').prop('disabled', false);
+                $('#LeaveStartDateRow').hide(1300)
+                $('#LeaveStartDate').prop('disabled', true);
+            } else {
+                $('#plannerStartDate').prop('disabled', true);
+                $('#plannerStartDateRow').hide(1000);
+                $('#LeaveStartDateRow').show(1300)
+                $('#LeaveStartDate').prop('disabled', false);
+            }
+        });
+        $('.BasedOnPlanners').on('change', function () {
+            if (this.value == "True") {
+                $('.EditPlannerStartDateRow').show(1000)
+                $('.EditPlannerStartDate').prop('disabled', false);
+                $('.EditLeaveStartDateRow').hide(1300)
+                $('.EditLeaveStartDate').prop('disabled', true);
+            } else {
+                $('.EditPlannerStartDate').prop('disabled', true);
+                $('.EditPlannerStartDateRow').hide(1000);
+                $('.EditLeaveStartDateRow').show(1300)
+                $('.EditLeaveStartDate').prop('disabled', false);
+            }
+        });
+    })
+</script>
+
+{% endblock %}

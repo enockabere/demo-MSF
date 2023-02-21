@@ -1,0 +1,276 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+APPRAISAL
+{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bgw" style="padding-bottom: 5rem;">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home</a>
+                    </li>
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'AppraisalRequests' %}" class="breadcrumbs text-dark">
+                            Appraisal
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                            Appraisal Targets
+                        </span></li>
+                </ol>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card card-body data-card">
+                    <h1 class="heading display-5 pb-3"><img src="../../../static/img/logo/fav.png" width="70px"
+                            class="img-fluid"> Appraisals Targets
+                        {% if file != 'None' %}
+                        <form action="{% url 'getDocs' file.No_ file.Table_ID %}" method="post" style="float: right;">
+                            {% csrf_token %}
+                            <input type="hidden" name="attachmentID" value="{{file.AuxiliaryIndex2}}">
+                            <input type="hidden" name="File_Name" value="{{file.File_Name}}">
+                            <input type="hidden" name="File_Extension" value="{{file.File_Extension}}">
+                            <div class="vn-green" style="text-align: center;">
+                                <button type="submit"
+                                    class="btn-wrap">{{file.File_Name}}.{{file.File_Extension}}</button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </h1>
+                    <div class="row my-2">
+                        <div class="btn-group btn-group-justified pb-2">
+                            <button href="#" class="btn btn-successs" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdropForTargets">
+                                <i class="las la-plus text-white"></i> New
+                                Departmental
+                                Targets</button>
+                            <a href="#" class="btn btn-primary">{{outputFinancialYear.Description}}</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="">
+                                <ul class="nav nav-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#home" class="nav-link active text-secondary"
+                                            data-bs-toggle="tab">Supervisor Scores
+                                            ({{submittedAppraisals|length}})</a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#pending" class="nav-link" data-bs-toggle="tab">{{department}}
+                                            Department Appraisal
+                                            Targets
+                                            ({{outputTarget|length}})</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="home">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Appraisal Code</th>
+                                                        <th>Status</th>
+                                                        <th>Appraiser Name</th>
+                                                        <th>Financial Year</th>
+                                                        <th>Appraisee Name</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for submittedAppraisal in submittedAppraisals %}
+                                                    <tr>
+                                                        <td>{{submittedAppraisal.Code}}</td>
+                                                        <td id="rap">{{submittedAppraisal.Status}}</td>
+                                                        <td>{{submittedAppraisal.AppraiserName}}</td>
+                                                        <td>{{submittedAppraisal.FinancialYear}} </td>
+                                                        <td>{{submittedAppraisal.EmployeeName}} </td>
+                                                        <td>
+                                                            <a href="{% url 'FnInitiateAppraisal' submittedAppraisal.Code %} "
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View">
+                                                                View <i class="far fa-eye"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pending">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Target Code</th>
+                                                        <th>Maximum Score</th>
+                                                        <th>Quarter 1</th>
+                                                        <th>Quarter 2</th>
+                                                        <th>Quarter 3</th>
+                                                        <th>Quarter 4</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for outputTarget in outputTarget %}
+                                                    <tr>
+                                                        <td>{{outputTarget.Code}}</td>
+                                                        <td id="rap">{{outputTarget.MaximumScore}}</td>
+                                                        <td>
+                                                            {% if outputTarget.Quarter1 == True %}
+                                                            <img src="../../static/icons/check-mark.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="">
+                                                            {% else %}
+                                                            <img src="../../static/icons/close.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="" srcset="">
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if outputTarget.Quarter2 == True %}
+                                                            <img src="../../static/icons/check-mark.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="">
+                                                            {% else %}
+                                                            <img src="../../static/icons/close.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="" srcset="">
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if outputTarget.Quarter3 == True %}
+                                                            <img src="../../static/icons/check-mark.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="">
+                                                            {% else %}
+                                                            <img src="../../static/icons/close.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="" srcset="">
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if outputTarget.Quarter4 == True %}
+                                                            <img src="../../static/icons/check-mark.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="">
+                                                            {% else %}
+                                                            <img src="../../static/icons/close.png" height="10px"
+                                                                width="10px" class="img-fluid" alt="" srcset="">
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <a href="{% url 'HODDetails' outputTarget.Code %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View">
+                                                                View Details..<i class="far fa-eye"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for targets -->
+        <div class="modal fade" id="staticBackdropForTargets" tabindex="-1" aria-labelledby="staticBackdropLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">
+                            Set Departmental Targets ( <span class="text-small">{{department}} Department</span> )
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="myForm" action="{% url 'HODAppraisalRequests' outputFinancialYear.Code %}"
+                            method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                <input type="hidden" name="myAction" value="insert">
+                                <input type="hidden" name="applicationCode" value="">
+                                <input type="hidden" name="departmentalAppraisalCode" value="{{dpt_code}}">
+
+                                <div class="row my-2">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="form-label">
+                                            Weighted
+                                            Score</label>
+                                        <input type="number" class="form-control" name="weightedScore"
+                                            placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="form-label my-2">Check
+                                            Quarter for the
+                                            weighted
+                                            Score</label>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input class="form-check-input" type="checkbox" name="Quarter1"
+                                                    value="True">
+                                                <label class="form-check-label mt-1">Quarter
+                                                    1</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input class="form-check-input" type="checkbox" name="Quarter2"
+                                                    value="True">
+                                                <label class="form-check-label mt-1">Quarter
+                                                    2</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input class="form-check-input" type="checkbox" name="Quarter3"
+                                                    value="True">
+                                                <label class="form-check-label mt-1">Quarter
+                                                    3</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input class="form-check-input" type="checkbox" name="Quarter4"
+                                                    value="True">
+                                                <label class="form-check-label mt-1">Quarter
+                                                    4</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" id="sasa" class="btn btn-success my-3 w-100">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,490 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+STAFF CLAIM
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Staff Claim</h4>
+                        <span style="margin-left: auto;">
+                            <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="outline: none; border: none;">
+                                <i class="las la-plus text-white" style="font-size: 15px;"></i> New taff Claim
+                            </button>
+                        </span>
+                    </div>
+                    <div class="m-4">
+                        <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                            <li class="nav-item flex-fill">
+                                <a href="#home" class="nav-link" data-bs-toggle="tab">Open
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{res|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#pending" class="nav-link" data-bs-toggle="tab">Pending Approval
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{pending|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#c-approve" class="nav-link active" data-bs-toggle="tab">Appproved
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{response|length}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="home">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Claim No.</th>
+                                                <th>Date Created</th>
+                                                <th>Claim Type</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in res %}
+                                            {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+                                            <tr style="background: #fee36e !important;">
+                                                <td>{{res.No_}}</td>
+                                                <td id="rejected_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.Claim_Type}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#rejected_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.No_}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit"> Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="{% url 'ClaimDetail' res.No_%}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="trainedit{{res.No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Staff Claim
+                                                                        <span class="editSpan">{{res.No_}}</span>
+
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close  btn-close-white"
+                                                                        data-bs-dismiss="modal" aria-label="Close">
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm needs-validation"
+                                                                        action="{% url 'claim' %}" method="post"
+                                                                        novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="claimNo"
+                                                                                    value="{{res.No_}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="myAction"
+                                                                                    value="modify">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Claim Type
+                                                                                    <span
+                                                                                        class="text-danger">*</span></label>
+                                                                                <select class="form-select claimTypes"
+                                                                                    name="claimType" required>
+                                                                                    <option selected disabled value="">
+                                                                                        Select Claim Type</option>
+                                                                                    <option value="1">General Claim
+                                                                                    </option>
+                                                                                    <option value="2">Medical Claim
+                                                                                    </option>
+                                                                                    <option value="3">Imprest Claim
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row imprestSurrDocNoRows"
+                                                                            style="display:none">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Imprest
+                                                                                    Surrender No</label>
+                                                                                <select
+                                                                                    class="form-select imprestSurrDocNos"
+                                                                                    name="imprestSurrDocNo" disabled>
+                                                                                    <option selected disabled value="">
+                                                                                        Select Imprest Surrender No
+                                                                                    </option>
+                                                                                    {% for res in my_claim %}
+                                                                                    <option value="{{res.No_}}">
+                                                                                        {{res.No_}} -
+                                                                                        {{res.Payment_Narration}}
+                                                                                    </option>
+                                                                                    {% endfor %}
+                                                                                </select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Purpose <span
+                                                                                        class="text-danger">*</span></label>
+                                                                                <textarea class="form-control"
+                                                                                    name="purpose" rows="3"
+                                                                                    required></textarea>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="open_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.Claim_Type}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#open_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.No_}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit"> Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="{% url 'ClaimDetail' res.No_%}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="trainedit{{res.No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Staff Claim
+                                                                        <span class="editSpan">{{res.No_}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal" aria-label="Close">
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm needs-validation"
+                                                                        action="{% url 'claim' %}" method="post"
+                                                                        novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="claimNo"
+                                                                                    value="{{res.No_}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="myAction"
+                                                                                    value="modify">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Claim Type
+                                                                                    <span
+                                                                                        class="text-danger">*</span></label>
+                                                                                <select class="form-select claimTypes"
+                                                                                    name="claimType" required>
+                                                                                    <option selected disabled value="">
+                                                                                        Select Claim Type</option>
+                                                                                    <option value="1">General Claim
+                                                                                    </option>
+                                                                                    <option value="2">Medical Claim
+                                                                                    </option>
+                                                                                    <option value="3">Imprest Claim
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row imprestSurrDocNoRows"
+                                                                            style="display:none">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Imprest
+                                                                                    Surrender No</label>
+                                                                                <select
+                                                                                    class="form-select imprestSurrDocNos"
+                                                                                    name="imprestSurrDocNo" disabled>
+                                                                                    <option selected disabled value="">
+                                                                                        Select Imprest Surrender No
+                                                                                    </option>
+                                                                                    {% for res in my_claim %}
+                                                                                    <option value="{{res.No_}}">
+                                                                                        {{res.No_}} -
+                                                                                        {{res.Payment_Narration}}
+                                                                                    </option>
+                                                                                    {% endfor %}
+                                                                                </select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Purpose <span
+                                                                                        class="text-danger">*</span></label>
+                                                                                <textarea class="form-control"
+                                                                                    name="purpose" rows="3"
+                                                                                    required></textarea>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="pending">
+                                <h4 class="mt-2 text-dark">pending Approval Staff Claim</h4>
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Claim No.</th>
+                                                <th>Date Requested</th>
+                                                <th>Claim Type</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in pending %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="pending_request_date">{{res.Date}}</td>
+                                                <td>{{res.Claim_Type}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#pending_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'ClaimDetail' res.No_%}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show active" id="c-approve">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Claim No.</th>
+                                                <th>Date Requested</th>
+                                                <th>Claim Type</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in response %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="approved_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.Claim_Type}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#approved_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'ClaimDetail' res.No_%}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Staff Claim
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm needs-validation" action="{% url 'claim' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" name="claimNo" value="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" name="myAction" value="insert">
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label class="form-label">Claim Type <span class="text-danger">*</span></label>
+                                <select class="form-select claimType" name="claimType" required>
+                                    <option selected disabled value="">Select Claim Type</option>
+                                    <option value="1">General Claim</option>
+                                    <option value="2">Medical Claim</option>
+                                    <option value="3">Imprest Claim</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row imprestSurrDocNoRow" style="display:none">
+                            <div class="col-md-12">
+                                <label class="form-label">Imprest Surrender No</label>
+                                <select class="form-select imprestSurrDocNo" name="imprestSurrDocNo" disabled>
+                                    <option selected disabled value="">Select Imprest Surrender No</option>
+                                    {% for res in my_claim %}
+                                    <option value="{{res.No_}}">{{res.No_}} - {{res.Payment_Narration}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label for="purpose" class="form-label">Purpose <span
+                                        class="text-danger">*</span></label>
+                                <textarea class="form-control" name="purpose" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $('.claimType').on('change', function () {
+            if (this.value == "3") {
+                $('.imprestSurrDocNoRow').show(1000)
+                $('.imprestSurrDocNo').prop('disabled', false);
+            } else {
+                $('.imprestSurrDocNo').prop('disabled', true);
+                $('.imprestSurrDocNoRow').hide(1000);
+            }
+        });
+        $('.claimTypes').on('change', function () {
+            if (this.value == "3") {
+                $('.imprestSurrDocNoRows').show(1000)
+                $('.imprestSurrDocNos').prop('disabled', false);
+            } else {
+                $('.imprestSurrDocNos').prop('disabled', true);
+                $('.imprestSurrDocNoRows').hide(1000);
+            }
+        });
+    })
+</script>
+
+{% endblock %}

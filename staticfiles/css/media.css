@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Gelasio&family=Hind:wght@300&family=Titillium+Web:wght@200&display=swap');
+
+:root {
+    --first-color: #144a85;
+    --first-color-light: #6c8aaf;
+    --green-color: #134326;
+    --red-color: #e51e25;
+    --sand-tan: #e1b382;
+    --dark-color: #444a4a;
+    --olive: #A3BCB6;
+    --white-color: #F7F6FB;
+    --primary-font: 'Gelasio', serif;
+    --normal-font: 'Titillium Web', sans-serif;
+    --third-font: 'Hind', sans-serif;
+    --shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(119, 117, 117, 0.2), 0 1px 5px 0 rgba(128, 125, 125, 0.12);
+
+}
+
+@media screen and (max-width:767px) {
+    .d-text {
+        margin-top: 2rem;
+    }
+
+    .d-text h4 {
+        font-size: 2rem;
+    }
+
+    .d-items {
+        float: left;
+    }
+
+    .card2 {
+        margin-top: 1rem;
+        margin-top: 1rem;
+    }
+
+}
+
+
+@media screen and (max-width:320px) {
+    #dropdown1 {
+        width: 125px;
+        font-size: 10px;
+    }
+
+    #foo {
+        position: absolute;
+        bottom: 0;
+        width: auto;
+        right: 0;
+    }
+
+    #foo2 {
+        color: #fff;
+        padding-left: 40px;
+        margin-top: 20px;
+    }
+
+    #foo3 {
+        font-size: 10px;
+    }
+
+    #foo4 {
+        margin-right: 10px;
+        margin-left: 12px;
+        font-size: 10px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    #res_card {
+        margin: 2rem;
+        max-width: 990px;
+
+    }
+
+}
+
+@media screen and (max-width:375px) {
+    #foo {
+        position: absolute;
+        bottom: 0;
+        width: auto;
+        right: 0;
+    }
+
+    #foo2 {
+        color: #fff;
+        padding-left: 80px;
+        margin-top: 20px;
+    }
+
+    #foo3 {
+        font-size: 10px;
+    }
+
+    #foo4 {
+        margin-right: 10px;
+        margin-left: 70px;
+        font-size: 10px;
+        margin-top: 5px;
+        display: none;
+    }
+
+
+}
+
+@media screen and (max-width:425px) {
+    #foo {
+        position: absolute;
+        bottom: 0;
+        width: auto;
+        right: 0;
+    }
+
+    #foo2 {
+        color: #fff;
+        padding-left: 120px;
+        margin-top: 20px;
+    }
+
+    #foo3 {
+        font-size: 10px;
+        float: left;
+        margin-right: 90px
+    }
+
+    #foo4 {
+        margin-right: 10px;
+        font-size: 10px;
+        margin-top: 5px;
+    }
+
+    .titles {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .p-card {
+        margin-bottom: 1rem;
+    }
+
+    #dash_card {
+        margin-top: 1rem;
+    }
+}
+
+@media screen and (min-width: 443px) {
+    .modal-body .datepicker {
+        padding: 8px !important;
+        min-width: 430px !important;
+        font-size: 17px !important;
+        color: black !important;
+        background-color: transparent !important;
+        background-clip: padding-box !important;
+        border: 1px solid #28a745 !important;
+        font-family: var(--primary-font) !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .modal-body .SmallDatepicker {
+        padding: 8px !important;
+        min-width: 100% !important;
+        font-size: 17px !important;
+        color: black !important;
+        background-color: transparent !important;
+        background-clip: padding-box !important;
+        border: 1px solid #28a745 !important;
+        font-family: var(--primary-font) !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .modal-body .LargeDatepicker {
+        padding: 8px !important;
+        min-width: 550px !important;
+        font-size: 17px !important;
+        color: black !important;
+        background-color: transparent !important;
+        background-clip: padding-box !important;
+        border: 1px solid #28a745 !important;
+        font-family: var(--primary-font) !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .modal-body .datepicker:focus {
+        outline: red !important;
+        box-shadow: red !important;
+    }
+
+    #dash_card {
+        margin-top: 1rem;
+    }
+}

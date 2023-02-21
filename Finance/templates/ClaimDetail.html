@@ -1,0 +1,514 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+STAFF CLAIM DETAIL
+{% endblock %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper" style="padding-bottom: 5rem;">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home</a>
+                    </li>
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'claim' %}" class="breadcrumbs text-dark">
+                            Staff Claim
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                            {{res.No_}}
+                        </span></li>
+                </ol>
+            </div>
+        </div>
+        <div class="d-xl-flex justify-content-end align-items-start">
+            <div class="d-sm-flex justify-content-xl-between align-items-center mb-2">
+                <div class="dropdown ml-0 ml-md-4 mt-2 mt-lg-0">
+                    {% if res.Status == "Open" %}
+                    <button class="btn btn-successs p-3 d-flex align-items-center" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"> <i class="las la-plus"></i> Add Claim
+                        Lines
+                    </button>
+                    {% elif res.Status == "Released" %}
+                    <form action="{% url 'FnGenerateStaffClaimReport' res.No_ %}" method="post"
+                        style="display:inline-block">
+                        {% csrf_token %}
+                        <button class="btn btn-successs" type="submit"> Preview
+                            Report</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-3">
+            <div class="col-md-3">
+                <div class="card l-bg-cherry statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Claim Type</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{res.Claim_Type}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-blue-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Claim Status</h5>
+                        </div>
+                        {% if res.Status == "Open" %}
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{res.Status}}
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                            <div class="progress-bar l-bg-red" role="progressbar" data-width="50%" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+                        </div>
+                        {% elif res.Status == "Pending Approval" %}
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{res.Status}}
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                            <div class="progress-bar l-bg-yellow" role="progressbar" data-width="25%" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+                        </div>
+                        {% elif res.Status == "Released" %}
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    Approved
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                            <div class="progress-bar l-bg-green" role="progressbar" data-width="75%" aria-valuenow="75"
+                                aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-green-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Cash Claim Amount</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0" id="petty_cash_amount">
+                                    {{res.Petty_Cash_Amount}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-orange-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-times"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Due Date</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0" id="due_date_card">
+                                    {{res.Due_Date}}
+                                </h2>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="accordion" class="accordion-style">
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Details
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Claim Number</label>
+                                                <input type="text" class="form-control" placeholder="{{res.No_}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Date Created</label>
+                                                <input type="text" id="date_inserted" class="form-control"
+                                                    placeholder="{{res.Date}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Account No </label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Account_No_}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Account Name </label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Account_Name}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Employee</label>
+                                                <input type="text" class="form-control" placeholder="{{res.User_Id}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Imprest Surrender Doc No</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Imprest_Surrender_Doc__No}}" readonly>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">Purpose</label>
+                                                <textarea class="form-control" placeholder="{{res.Payment_Narration}}"
+                                                    rows="3" readonly></textarea>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingTwo">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                    aria-expanded="true" aria-controls="collapseTwo">Staff Claim Lines</button>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                            data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <table id="example"
+                                    class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr id="tops">
+                                            <th id="long">Claim Type</th>
+                                            <th>Payment Type</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Expenditure Date</th>
+                                            {% if res.Status == "Open" %}
+                                            <th>Action</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for line in line %}
+                                        <tr>
+                                            <td>{{line.Claim_Type}}</td>
+                                            <td>{{line.Payment_Type}}</td>
+                                            <td>{{line.Description}}</td>
+                                            <td id="amount_lcy{{line.Line_No}}">{{line.Amount__LCY_}}</td>
+                                            <td id="expenditure_date{{line.Line_No}}">{{line.Expenditure_Date}}</td>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $("#amount_lcy{{line.Line_No}}")
+                                                        .empty()
+                                                        .append(currency(
+                                                            '{{line.Amount__LCY_}}', {
+                                                                separator: ','
+                                                            }).format());
+                                                    $("#expenditure_date{{line.Line_No}}")
+                                                        .empty().append(moment(
+                                                                '{{line.Expenditure_Date}}', "YYYY-MM-DD")
+                                                            .format(
+                                                                'Do MMM YYYY'));
+                                                })
+                                            </script>
+                                            {% if res.Status == "Open" %}
+                                            <td>
+                                                <form action="{% url 'FnDeleteStaffClaimLine' line.No %}" method="post"
+                                                    style="display: inline-block;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="lineNo" value="{{line.Line_No}}">
+                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip"
+                                                        data-placement="top" title="Delete"><i
+                                                            class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">My
+                                    Attachments</button>
+                            </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                            data-bs-parent="#accordion">
+                            <div class="row m-2">
+                                {% for data in file %}
+                                <div class="col-lg-4 col-xl-3">
+                                    <div class="file-man-box">
+                                        {% if res.Status == 'Open' %}
+                                        <form action="{% url 'DeleteClaimAttachment' data.No_  %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="docID" value="{{data.AuxiliaryIndex2}}">
+                                            <input type="hidden" name="tableID" value="{{data.Table_ID}}">
+                                            <button class="file-close" id="file-close"><i
+                                                    class="fa fa-times-circle"></i></button>
+                                        </form>
+                                        {% endif %}
+                                        <div class="file-img-box"><img src="../../static/img/logo/f1.png" alt="icon">
+                                        </div>
+                                        <form action="{% url 'getDocs' data.No_ data.Table_ID %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="attachmentID" value="{{data.AuxiliaryIndex2}}">
+                                            <input type="hidden" name="File_Name" value="{{data.File_Name}}">
+                                            <input type="hidden" name="File_Extension" value="{{data.File_Extension}}">
+                                            <button class="file-download mx-1"><i
+                                                    class="fa fa-download text-success"></i></button>
+                                        </form>
+                                        <div class="file-man-title">
+                                            <h5 class="mb-0 text-overflow">
+                                                {{data.File_Name}}.{{data.File_Extension}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <img src="../../static/icons/empty-box.png" class="img-fluid" height="100" width="100"
+                                    alt="">
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+        <div class="row my-2 py-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            Rejection Comments
+                        </h4>
+                        <div class="row">
+                            <div class="chat-history">
+                                <ul class="m-b-0">
+                                    {% for comment in Comments %}
+                                    <li class="clearfix">
+                                        <div class="message-data">
+                                            <span class="message-data-time">{{comment.User_ID}}</span>
+                                        </div>
+                                        <div class="message my-message">{{comment.Comment}}</div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                {% if res.Status == "Open" %}
+                <div class="myForm my-3">
+                    <form action="{% url 'ClaimApprove' res.No_ %}" method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="hidden" hidden name="requisitionNo" value="{{res.No_}}">
+                        </div>
+                        <button class="btn btn-info" type="submit">Request For Approval</button>
+                    </form>
+                </div>
+                {% elif res.Status == "Pending Approval" %}
+                <div class="d-grid gap-2 my-3">
+                    <form action="{% url 'ClaimCancel' res.No_ %}" method="POST" class="myForm" id="approvalForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="hidden" hidden name="requisitionNo" value="{{res.No_}}">
+                        </div>
+                        <button class="btn btn-info" type="submit">Cancel Request For Approval</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% if res.Status == "Pending Approval" %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card" id="d-card">
+                    <h4 class="mt-2 mx-2 text-dark">Document Approvers</h4>
+                    <div class="card-body">
+                        <table id="example"
+                            class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                            style="width:100%">
+                            <thead>
+                                <tr id="tops">
+                                    <th id="long">Entry No</th>
+                                    <th>Name</th>
+                                    <th>Sequence</th>
+                                    <th>Status</th>
+                                    <th>Modified By</th>
+                                    <th>Modified Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for Approvers in Approvers %}
+                                <tr>
+                                    <td>{{Approvers.Entry_No_}}</td>
+                                    <td>{{Approvers.Approver_ID}}</td>
+                                    <td>{{Approvers.Sequence_No_}}</td>
+                                    <td>{{Approvers.Status}}</td>
+                                    <td>{{Approvers.Last_Modified_By_User_ID}}</td>
+                                    <td id="ModifiedDate{{Approvers.Entry_No_}}">
+                                        {{Approvers.Last_Date_Time_Modified}}
+                                    </td>
+                                    <script>
+                                        $("#ModifiedDate{{Approvers.Entry_No_}}")
+                                            .empty()
+                                            .append(new Date(
+                                                '{{Approvers.Last_Date_Time_Modified}}').toString());
+                                    </script>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Staff Claim Line
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm needs-validation" action="{% url 'ClaimDetail' res.No_ %}" method="post"
+                        enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" name="lineNo" value="0">
+                                <input type="hidden" name="myAction" value="insert">
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Claim Type <span class="text-danger">*</span></label>
+                                <select class="form-select" name="claimType" required>
+                                    <option selected disabled value="">Select Claim Type</option>
+                                    {% for res in res_type %}
+                                    <option value="{{res.Code}}">{{res.Description}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Amount <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="amount" required>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Expenditure Date <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="Expenditure" min="1980-01-01" max=""
+                                    name="expenditureDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Add Attachment <span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control" name="attachment" type="file" multiple required>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Expenditure Description <span
+                                        class="text-danger">*</span></label>
+                                <textarea class="form-control" name="expenditureDescription" rows="3"
+                                    required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<script>
+    $(document).ready(function () {
+        var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
+        var x = document.getElementById("Expenditure").max = utc;
+        var text = document.getElementById("Expenditure").getAttribute("max");
+    })
+    $("#petty_cash_amount")
+        .empty()
+        .append(currency(
+            '{{res.Petty_Cash_Amount}}', {
+                separator: ','
+            }).format());
+    $("#due_date_card")
+        .empty().append(moment(
+                '{{res.Due_Date}}', "YYYY-MM-DD")
+            .format(
+                'Do MMM YYYY'));
+    $("#date_inserted").attr("placeholder", moment(
+        '{{res.Date}}', "YYYY-MM-DD").format(
+        'Do MMM YYYY')).val("").focus().blur();
+</script>
+
+{% endblock %}

@@ -1,0 +1,1482 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+APPROVALS
+{% endblock %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper" style="padding-bottom: 5rem;">
+        <div class="row" id="proBanner">
+            <div class="col-12">
+                <span class="d-flex align-items-center purchase-popup">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Document Approvals</h4>
+                    </div>
+                    <!-- <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                    <h4 class="mt-5 mx-3"></h4>Document Approvals
+                    <button class="btn btn-danger align-items-center p-3"
+                        style="margin-left: auto;margin-right:0;outline: none;border: none;">{{today}}</button> -->
+                </span>
+
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row">
+            <div class="col-md-12 ">
+                <div class="d-sm-flex justify-content-between align-items-center transaparent-tab-border">
+                    <ul class="nav nav-tabs tab-transparent d-flex" id="nav-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-item nav-link active" id="nav-leave-tab" data-toggle="tab" href="#nav-leave"
+                                role="tab" aria-controls="nav-leave" aria-selected="true">HR <span
+                                    class="brs">({{openLeave|length}})</span></a>
+                        </li>
+
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Imprest-tab" data-toggle="tab" href="#nav-Imprest"
+                                role="tab" aria-controls="nav-Imprest" aria-selected="false">Imprest <span
+                                    class="brs">({{imprest|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Surrender-tab" data-toggle="tab" href="#nav-Surrender"
+                                role="tab" aria-controls="nav-Surrender" aria-selected="false">Surrender <span
+                                    class="brs">({{openSurrender|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-claim-tab" data-toggle="tab" href="#nav-claim"
+                                role="tab" aria-controls="nav-claim" aria-selected="false">Staff Claim <span
+                                    class="brs">({{openClaim|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Purchase-tab" data-toggle="tab" href="#nav-Purchase"
+                                role="tab" aria-controls="nav-Purchase" aria-selected="false">Purchase Request <span
+                                    class="brs">({{openPurchase|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Repair-tab" data-toggle="tab" href="#nav-Repair"
+                                role="tab" aria-controls="nav-Repair" aria-selected="false">Repair <span
+                                    class="brs">({{openRepair|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Store-tab" data-toggle="tab" href="#nav-Store"
+                                role="tab" aria-controls="nav-Store" aria-selected="false">Store <span
+                                    class="brs">({{openStore|length}})</span></a>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <a class="nav-item nav-link" id="nav-Other-tab" data-toggle="tab" href="#nav-Other"
+                                role="tab" aria-controls="nav-Other" aria-selected="false">Other <span
+                                    class="brs">({{openOther|length}})</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content tab-transparent-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-leave" role="tabpanel"
+                        aria-labelledby="nav-leave-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#openLeave" class="nav-link active" data-bs-toggle="tab">Documents
+                                            Pending Your
+                                            Approval <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openLeave|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appLeave" class="nav-link" data-bs-toggle="tab">Documents You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{approvedLeave|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejLeave" class="nav-link" data-bs-toggle="tab"> Documents You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{reject|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openLeave">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openLeave %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="open_leave_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_leave_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appLeave">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in approvedLeave %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="app_leave_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_leave_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejLeave">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in reject %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="rejected_leave_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rejected_leave_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="nav-Imprest" role="tabpanel" aria-labelledby="nav-Imprest-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#opeIMp" class="nav-link active" data-bs-toggle="tab">Imprest Requests
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{imprest|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#AppImp" class="nav-link" data-bs-toggle="tab">Imprest Requests You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{approvedIMP|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejImp" class="nav-link" data-bs-toggle="tab">Imprest Requests You
+                                            Rejected
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejectedImp|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="opeIMp">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in imprest %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="open_imprest_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_imprest_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="AppImp">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for appImp in approvedIMP %}
+                                                    <tr>
+                                                        <td>{{appImp.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="app_imprest_date_sent{{appImp.Document_No_}}">
+                                                            {{appImp.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{appImp.Sender_ID}}</td>
+                                                        <td>{{appImp.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_imprest_date_sent{{appImp.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{appImp.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' appImp.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejImp">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejectedImp %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="rej_imprest_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_imprest_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-Surrender" role="tabpanel" aria-labelledby="nav-Surrender-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#home" class="nav-link active" data-bs-toggle="tab">Imprest Surrender
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openSurrender|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#profile" class="nav-link" data-bs-toggle="tab">Imprest Surrender You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{approveSurrender|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#reject" class="nav-link" data-bs-toggle="tab">Imprest Surrender You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejectSurrender|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="home">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openSurrender %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="open_surrender_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_surrender_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="profile">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in approveSurrender %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="app_surrender_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_surrender_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="reject">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejectSurrender %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="rej_surrender_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_surrender_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-claim" role="tabpanel" aria-labelledby="nav-claim-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#openClaim" class="nav-link active" data-bs-toggle="tab">Staff Claim
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openClaim|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appClaim" class="nav-link" data-bs-toggle="tab">Staff Claim You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{approveClaim|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejClaim" class="nav-link" data-bs-toggle="tab">Staff Claim You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejectClaim|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openClaim">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openClaim %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="open_claim_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_claim_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appClaim">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in approveClaim %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="app_claim_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_claim_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejClaim">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejectClaim %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="rej_claim_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_claim_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-Purchase" role="tabpanel" aria-labelledby="nav-Purchase-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item">
+                                        <a href="#openPurchase" class="nav-link active" data-bs-toggle="tab">Purchase
+                                            Request
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openPurchase|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appPurchase" class="nav-link" data-bs-toggle="tab">Purchase Request
+                                            You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{approvePurchase|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejPurchase" class="nav-link" data-bs-toggle="tab">Purchase Request
+                                            You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejectPurchase|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openPurchase">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openPurchase %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="open_purchase_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_purchase_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appPurchase">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in approvePurchase %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="app_purchase_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_purchase_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejPurchase">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejectPurchase %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="rej_purchase_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_purchase_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-Repair" role="tabpanel" aria-labelledby="nav-Repair-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#openrepair" class="nav-link active" data-bs-toggle="tab">Repair
+                                            Request
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openRepair|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appRepair" class="nav-link" data-bs-toggle="tab">Repair Request You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{appRepair|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejRepair" class="nav-link" data-bs-toggle="tab">Repair Request You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejRepair|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openrepair">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openRepair %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="open_repair_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_repair_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appRepair">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in appRepair %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="app_repair_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_repair_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejRepair">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejRepair %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="rej_repair_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_repair_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-Store" role="tabpanel" aria-labelledby="nav-Store-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#openStore" class="nav-link active" data-bs-toggle="tab">Store Request
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openStore|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appStore" class="nav-link" data-bs-toggle="tab">Store Request You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{appStore|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejStore" class="nav-link" data-bs-toggle="tab">Store Request You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejStore|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openStore">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openStore %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="open_store_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_store_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appStore">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No.</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in appStore %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="app_store_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_store_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejStore">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejStore %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <td id="rej_store_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_store_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-Other" role="tabpanel" aria-labelledby="nav-Other-tab">
+                        <div class="card" id="d-card">
+                            <div class="m-4">
+                                <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                                    <li class="nav-item flex-fill">
+                                        <a href="#openTrain" class="nav-link active" data-bs-toggle="tab">
+                                            Documents
+                                            Pending Your
+                                            Approval
+                                            <span class="ml-1 badge rounded-pill green_icon">
+                                                {{openOther|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#appTrain" class="nav-link" data-bs-toggle="tab"> Documents You
+                                            Approved <span class="ml-1 badge rounded-pill green_icon">
+                                                {{appOther|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item flex-fill">
+                                        <a href="#rejTrain" class="nav-link" data-bs-toggle="tab">Documents You
+                                            Rejected <span class="ml-1 badge rounded-pill green_icon">
+                                                {{rejOther|length}}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="openTrain">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in openOther %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td>{{res.Document_Type}}</td>
+                                                        <td id="open_other_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#open_other_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="appTrain">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in appOther %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="app_other_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#app_other_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="rejTrain">
+                                        <div class="card-body">
+                                            <table id="example"
+                                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                                style="width:100%">
+                                                <thead>
+                                                    <tr id="tops">
+                                                        <th id="long">Document No</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date Sent</th>
+                                                        <th>Sender</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for res in rejOther %}
+                                                    <tr>
+                                                        <td>{{res.Document_No_}}</td>
+                                                        <td id="rap">{{res.Document_Type}}</td>
+                                                        <td id="rej_other_date_sent{{res.Document_No_}}">
+                                                            {{res.Date_Time_Sent_for_Approval}}</td>
+                                                        <td>{{res.Sender_ID}}</td>
+                                                        <td>{{res.Status}}</td>
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $("#rej_other_date_sent{{res.Document_No_}}")
+                                                                    .empty().append(moment(
+                                                                            '{{res.Date_Time_Sent_for_Approval}}',
+                                                                            "YYYY-MM-DD, h:mm:ss a")
+                                                                        .format(
+                                                                            'Do MMM YYYY, h:mm a'));
+                                                            })
+                                                        </script>
+                                                        <td>
+                                                            <a href="{% url 'ApproveData' res.Document_No_ %}"
+                                                                class="btn btn-success btn-icon-text" type="button"
+                                                                data-toggle="tooltip" data-placement="top" title="View"
+                                                                style="background: #25CC88;"><i class="fa fa-table"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    </div>
+</section>
+
+{% endblock %}

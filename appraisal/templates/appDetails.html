@@ -1,0 +1,962 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+APPRAISAL
+{% endblock %}
+
+{% block head %}
+<script src="../../static/plugins/flaviusmatis-simplePagination.js-da97104/tests/lib/jquery.min.js"></script>
+<script src="../../static/plugins/flaviusmatis-simplePagination.js-da97104/jquery.simplePagination.js"></script>
+<link rel="stylesheet" href="../../static/plugins/flaviusmatis-simplePagination.js-da97104/simplePagination.css">
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper" style="padding-bottom: 5rem;">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home</a>
+                    </li>
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'AppraisalRequests' %}" class="breadcrumbs text-dark">
+                            Appraisal
+                        </a>
+                    </li>
+                    {% if HOD_User == True %}
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'HODAppraisalRequests' appraisal.FinancialYear %}"
+                            class="breadcrumbs text-dark">
+                            Appraisal List
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                            Appraisal {{appraisal.Code}}
+                        </span></li>
+                </ol>
+            </div>
+        </div>
+        <div class="d-xl-flex justify-content-end align-items-start">
+            <div class="d-sm-flex justify-content-xl-between align-items-center mb-2">
+                {% if appraisal.Status == 'Self Appraisal' and HOD_User == False %}
+                <button class="btn btn-successs p-3 d-flex align-items-center" data-bs-toggle="modal"
+                    data-bs-target="#Attachment" type="button"> <i class="las la-plus text-white"
+                        style="font-size:15px;"></i> Upload Attachment
+                </button>
+                {% endif %}
+                {% if appraisal.Status == "Self Appraisal" and appraisal.CurrentQuarter == '4th Quarter' and HOD_User == False %}
+                <button class="btn btn-successs p-3 d-flex align-items-center mx-2" data-bs-toggle="modal"
+                    data-bs-target="#trainingModal" type="button"> <i class="las la-plus text-white"
+                        style="font-size:15px;"></i>Any Required Training ?
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-3">
+            <div class="col-md-3">
+                <div class="card l-bg-cherry statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Appraisal Code</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{appraisal.Code}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-blue-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Current Quarter</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{appraisal.CurrentQuarter}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-green-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Status</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{appraisal.Status}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card l-bg-orange-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-times"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Financial Year</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{appraisal.FinancialYear}}
+                                </h2>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div id="accordion" class="accordion-style">
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Details
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="row g-3">
+                                            <div class="col-md-3">
+                                                <label class="form-label">Appraiser No</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.AppraiserNo}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Appraiser Name</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.AppraiserName}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Department Name</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.DepartmentName}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Targets</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.TotalTargets}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Targets Quarter 1</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.TotalTargetsQ1}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Targets Quarter 2 </label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.TotalTargetsQ2}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Targets Quarter 3 </label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.TotalTargetsQ3}}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Targets Quarter 4 </label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{appraisal.TotalTargetsQ4}}" readonly>
+                                            </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingThree">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+                                    aria-expanded="true" aria-controls="collapseThree">Appraisal Targets
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree"
+                            data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="job-tab text-center">
+                                            <ul class="nav nav-tabs justify-content-center" role="tablist">
+                                                <li role="presentation" class="active">
+                                                    <a class="active show" href="#hot-jobs" aria-controls="hot-jobs"
+                                                        role="tab" data-toggle="tab" aria-selected="true">{{quarter}}
+                                                        (<span class="text-small">{{active_targets|length}}</span>)</a>
+                                                </li>
+                                                {% if appraisal.CurrentQuarter == '4th Quarter' %}
+                                                <li role="presentation"><a href="#core_attributes"
+                                                        aria-controls="core_attributes" role="tab" data-toggle="tab"
+                                                        class="" aria-selected="false">Core Attributes (<span
+                                                            class="text-small">{{core_attributes|length}}</span>)</a>
+                                                </li>
+                                                {% endif %}
+                                                <li role="presentation">
+                                                    <a href="#recent-jobs" aria-controls="recent-jobs" role="tab"
+                                                        data-toggle="tab" class="" aria-selected="false">Prev Quarters
+                                                        (<span class="text-small">{{other_targets|length}}</span>)</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content border-0 text-left">
+                                                <div role="tabpanel" class="tab-pane fade active show" id="hot-jobs">
+                                                    <div class="row pager">
+                                                        {% for active in active_targets %}
+                                                        <div class="col-md-4 my-2 pageItem">
+                                                            <div class="job-item">
+                                                                <div class="item-overlay">
+                                                                    <div class="job-info">
+                                                                        <ul class="tr-list job-meta">
+                                                                            <div class="my-2 targetContent">
+                                                                                <a href="#"
+                                                                                    class="btn btn-primary my-2">{{active.Category}}
+                                                                                    Description</a>
+                                                                                <p>
+                                                                                    {{active.TargetDescription}}
+                                                                                </p>
+                                                                            </div>
+                                                                        </ul>
+                                                                        <ul class="job-social tr-list">
+                                                                            {% if appraisal.Status == "Self Appraisal" and HOD_User == False %}
+                                                                            <li>
+                                                                                <a href="#" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="Add Score"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#exampleModal{{active.Code}}">
+                                                                                    <i class="fa fa-long-arrow-right"
+                                                                                        aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            {% elif appraisal.Status == "Supervisor Appraisal" and HOD_User == True %}
+                                                                            <li>
+                                                                                <a href="#" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="Add Score"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#exampleModal{{active.Code}}">
+                                                                                    <i class="fa fa-long-arrow-right"
+                                                                                        aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            {% endif %}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="job-info">
+                                                                    <span class="tr-title">
+                                                                        <h4>{{active.Quarter}} {{active.Category}}</h4>
+                                                                    </span>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <ul class="tr-list job-meta mt-2">
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Weighted
+                                                                                    Score: <span
+                                                                                        class="text-success">{{active.MaximumTargetScore}}</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Self
+                                                                                    Appraisal Score: <span
+                                                                                        class="text-success">{{active.SelfAppraisalScore}}</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Supervisor
+                                                                                    Score: <span
+                                                                                        class="text-success">{{active.SupervisorAppraisalScore}}</span>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div
+                                                                                class="targetImage mr-auto text-center p-2">
+                                                                                <img src="../../static/icons/t2.png"
+                                                                                    class="img-fluid" height="90" alt=""
+                                                                                    srcset="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="time">
+                                                                        <a href="#"><span>Target ID:</span></a>
+                                                                        <span class="pull-right">{{active.Code}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal fade" id="exampleModal{{active.Code}}"
+                                                            tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">
+                                                                            Scores
+                                                                            for
+                                                                            Target No: ( <span
+                                                                                class="text-small">{{active.Code}}</span>
+                                                                            )</h5>
+                                                                        <button type="button"
+                                                                            class="btn-close btn-close-white"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="myForm"
+                                                                            action="{% url 'FnAppraisalScores' %}"
+                                                                            method="post" novalidate>
+                                                                            {% csrf_token %}
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden"
+                                                                                        name="scoreScode"
+                                                                                        value="{{active.Code}}">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                    {% if appraisal.Status == 'Self Appraisal' %}
+                                                                                    <input type="hidden"
+                                                                                        name="selfAppraisal"
+                                                                                        value="True">
+                                                                                    {% elif appraisal.Status == 'Supervisor Appraisal' %}
+                                                                                    <input type="hidden"
+                                                                                        name="selfAppraisal"
+                                                                                        value="False">
+                                                                                    {% endif %}
+                                                                                    <input type="hidden"
+                                                                                        name="appraisalCode"
+                                                                                        value="{{appraisal.Code}}">
+                                                                                    <input type="hidden"
+                                                                                        name="employeeNo"
+                                                                                        value="{{active.EmployeeNo}}">
+                                                                                    <input type="hidden" name="quarter"
+                                                                                        value="{{appraisal.CurrentQuarter}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Score<span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <input type="text" name="score"
+                                                                                        placeholder="0"
+                                                                                        class="form-control">
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% empty %}
+                                                        <div class="mr-auto text-center">
+                                                            <p class="my-2 text-muted">
+                                                                Stack is empty.
+                                                            </p>
+                                                            <img src="../../static/icons/empty-box.png"
+                                                                class="img-fluid" height="200" alt="" srcset="">
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div role="tabpanel" class="tab-pane fade in" id="core_attributes">
+                                                    <div class="row">
+                                                        {% for attribute in core_attributes %}
+                                                        <div class="col-md-4 my-2 pageItem">
+                                                            <div class="job-item">
+                                                                <div class="item-overlay">
+                                                                    <div class="job-info">
+                                                                        <ul class="tr-list job-meta">
+                                                                            <div class="my-2 targetContent">
+                                                                                <a href="#"
+                                                                                    class="btn btn-primary my-2">{{attribute.Category}}
+                                                                                    Description</a>
+                                                                                <p>
+                                                                                    {{attribute.CoreAttributeDescription}}
+                                                                                </p>
+                                                                            </div>
+                                                                        </ul>
+                                                                        <ul class="job-social tr-list">
+                                                                            {% if appraisal.Status == "Self Appraisal" and HOD_User == False %}
+                                                                            <li>
+                                                                                <a href="#" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="Add Score"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#attributeModal{{attribute.CoreAttribute}}">
+                                                                                    <i class="fa fa-long-arrow-right"
+                                                                                        aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            {% elif appraisal.Status == "Supervisor Appraisal" and HOD_User == True %}
+                                                                            <li>
+                                                                                <a href="#" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="Add Score"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#attributeModal{{attribute.CoreAttribute}}">
+                                                                                    <i class="fa fa-long-arrow-right"
+                                                                                        aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </li>
+                                                                            {% endif %}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="job-info">
+                                                                    <span class="tr-title">
+                                                                        <h4>{{attribute.Category}}
+                                                                        </h4>
+                                                                    </span>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <ul class="tr-list job-meta mt-2">
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Maximum
+                                                                                    Score: <span
+                                                                                        class="text-success">Excellent</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Self
+                                                                                    Appraisal Score: <span
+                                                                                        class="text-success">{{attribute.Self_Appraisal_Rating}}</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Supervisor
+                                                                                    Score: <span
+                                                                                        class="text-success">{{attribute.Supervisor_Appraisal_Rating}}</span>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div
+                                                                                class="targetImage mr-auto text-center p-2">
+                                                                                <img src="../../static/icons/t2.png"
+                                                                                    class="img-fluid" height="90" alt=""
+                                                                                    srcset="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="time">
+                                                                        <a href="#"><span>Attribute ID:</span></a>
+                                                                        <span
+                                                                            class="pull-right">{{attribute.CoreAttribute}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal fade"
+                                                            id="attributeModal{{attribute.CoreAttribute}}" tabindex="-1"
+                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">
+                                                                            Scores
+                                                                            for
+                                                                            Attribute No: ( <span
+                                                                                class="text-small">{{attribute.CoreAttribute}}</span>
+                                                                            )</h5>
+                                                                        <button type="button"
+                                                                            class="btn-close btn-close-white"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="myForm"
+                                                                            action="{% url 'FnCoreAttributesAppraisalScores' %}"
+                                                                            method="post" novalidate>
+                                                                            {% csrf_token %}
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden"
+                                                                                        name="depAppraisalPeriod"
+                                                                                        value="{{attribute.DepartmentalAppraisalPeriod}}">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                    {% if appraisal.Status == 'Self Appraisal' %}
+                                                                                    <input type="hidden"
+                                                                                        name="selfAppraisal"
+                                                                                        value="True">
+                                                                                    {% elif appraisal.Status == 'Supervisor Appraisal' %}
+                                                                                    <input type="hidden"
+                                                                                        name="selfAppraisal"
+                                                                                        value="False">
+                                                                                    {% endif %}
+                                                                                    <input type="hidden"
+                                                                                        name="attributeCode"
+                                                                                        value="{{attribute.CoreAttribute}}">
+                                                                                    <input type="hidden"
+                                                                                        name="employeeNo"
+                                                                                        value="{{attribute.EmployeeNo}}">
+                                                                                    <input type="hidden"
+                                                                                        name="appraisalCode"
+                                                                                        value="{{appraisal.Code}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Score<span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <select class="form-select"
+                                                                                        name="score"
+                                                                                        aria-label="Default select"
+                                                                                        required>
+                                                                                        <option selected disabled
+                                                                                            value="0">--select--
+                                                                                        </option>
+                                                                                        <option value="1">Poor</option>
+                                                                                        <option value="2">Fair</option>
+                                                                                        <option value="3">Good</option>
+                                                                                        <option value="4">Very Good
+                                                                                        </option>
+                                                                                        <option value="5">Excellent
+                                                                                        </option>
+                                                                                    </select>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% empty %}
+                                                        <div class="mr-auto text-center">
+                                                            <p class="my-2 text-muted">
+                                                                Stack is empty.
+                                                            </p>
+                                                            <img src="../../static/icons/empty-box.png"
+                                                                class="img-fluid" height="200" alt="" srcset="">
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+
+                                                </div>
+                                                <div role="tabpanel" class="tab-pane fade in" id="recent-jobs">
+                                                    <div class="row otherPager">
+                                                        {% for other in other_targets %}
+                                                        <div class="col-md-4 my-2 otherPageItem">
+                                                            <div class="job-item">
+                                                                <div class="item-overlay">
+                                                                    <div class="job-info">
+                                                                        <ul class="tr-list job-meta">
+                                                                            <div class="my-2 targetContent">
+                                                                                <a href="#"
+                                                                                    class="btn btn-primary">Target
+                                                                                    Description</a>
+                                                                                <p>
+
+                                                                                    {{other.TargetDescription}}
+                                                                                </p>
+                                                                                {% if appraisal.Status == "Self Appraisal" and appraisal.CurrentQuarter == '4th Quarter' and HOD_User == False %}
+                                                                                <a href="#"
+                                                                                    class="btn btn-primary my-2">{{other.Category}}</a>
+                                                                                <p>
+                                                                                    {{other.CoreAttributeDescription}}
+                                                                                </p>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="job-info">
+                                                                    <span class="tr-title">
+                                                                        <h4>{{other.Quarter}} {{other.Category}}</h4>
+                                                                    </span>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <ul class="tr-list job-meta mt-2">
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Weighted
+                                                                                    Score: <span
+                                                                                        class="text-success">{{other.MaximumTargetScore}}</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Self
+                                                                                    Appraisal Score: <span
+                                                                                        class="text-success">{{other.SelfAppraisalScore}}</span>
+                                                                                </li>
+                                                                                <li><span><i class="fa fa-star"
+                                                                                            aria-hidden="true"></i></span>Supervisor
+                                                                                    Score: <span
+                                                                                        class="text-success">{{other.SupervisorAppraisalScore}}</span>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div
+                                                                                class="targetImage mr-auto text-center p-2">
+                                                                                <img src="../../static/icons/t2.png"
+                                                                                    class="img-fluid" height="90" alt=""
+                                                                                    srcset="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="time">
+                                                                        <a href="#"><span>Target ID:</span></a>
+                                                                        <span class="pull-right">{{other.Code}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% empty %}
+                                                        <div class="mr-auto text-center">
+                                                            <p class="my-2 text-muted">
+                                                                Stack is empty.
+                                                            </p>
+                                                            <img src="../../static/icons/empty-box.png"
+                                                                class="img-fluid" height="200" alt="" srcset="">
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 mr-auto text-center">
+                                                            <div class="my-3" id="otherPagination"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if appraisal.CurrentQuarter == '4th Quarter' %}
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingFive">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="false"
+                                    aria-controls="collapseFive">Training Recommendations</button>
+                            </h5>
+                        </div>
+                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive"
+                            data-bs-parent="#accordion">
+                            <div class="row m-2">
+                                <div class="col-md-12">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Line No</th>
+                                                <th>Recommended Training By Appraisee</th>
+                                                <th>Recommended Training By Appraiser</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for training in trainings %}
+                                            <tr>
+                                                <td>{{training.LineNo}}</td>
+                                                <td>{{training.RecommendedTrainingByAppraisee}}</td>
+                                                <td>
+                                                    {{training.RecommendedTrainingByAppraiser}}
+                                                </td>
+                                                <td>
+                                                    {% if appraisal.Status == "Supervisor Appraisal" and appraisal.CurrentQuarter == '4th Quarter' and HOD_User == True %}
+                                                    <button class="btn btn-success btn-icon-text" data-bs-toggle="modal"
+                                                        data-bs-target="#trainingModal{{training.LineNo}}"
+                                                        type="button">
+                                                        Add Training..<i class="far fa-eye"></i>
+                                                    </button>
+                                                    {% endif %}
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="trainingModal{{training.LineNo}}"
+                                                        tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">HOD
+                                                                        Training Recommendations ( <span
+                                                                            class="text-small text-secondary">Line
+                                                                            No. {{training.LineNo}}</span>
+                                                                        )</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm"
+                                                                        action="{% url 'FnRecommendedTrainings' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="myAction"
+                                                                                    value="modify">
+                                                                                <input type="hidden" name="LineNo"
+                                                                                    value="{{training.LineNo}}">
+                                                                                <input type="hidden"
+                                                                                    name="selfAppraisal" value="False">
+
+                                                                                <input type="hidden"
+                                                                                    name="appraisalCode"
+                                                                                    value="{{appraisal.Code}}">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label class="form-label">Any
+                                                                                    Recommend
+                                                                                    Training
+                                                                                    ?</label>
+                                                                                <textarea class="form-control"
+                                                                                    name="recommendedTraining"
+                                                                                    rows="3"></textarea>
+                                                                                <div class="form-text">
+                                                                                    Add any
+                                                                                    recommended
+                                                                                    training
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">My
+                                    Attachments</button>
+                            </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                            data-bs-parent="#accordion">
+                            <div class="row m-2">
+                                {% for data in file %}
+                                <div class="col-lg-4 col-xl-3">
+                                    <div class="file-man-box">
+                                        <div class="file-img-box"><img src="../../static/img/logo/f1.png" alt="icon">
+                                        </div>
+                                        <form action="{% url 'getDocs' data.No_ data.Table_ID %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="attachmentID" value="{{data.AuxiliaryIndex2}}">
+                                            <input type="hidden" name="File_Name" value="{{data.File_Name}}">
+                                            <input type="hidden" name="File_Extension" value="{{data.File_Extension}}">
+                                            <button class="file-download mx-1"><i
+                                                    class="fa fa-download text-success"></i></button>
+                                        </form>
+                                        <div class="file-man-title">
+                                            <h5 class="mb-0 text-overflow">
+                                                {{data.File_Name}}.{{data.File_Extension}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <p class="text-danger p-4">
+                                    You have not uploaded any attachments <i class="las la-file-download"></i>
+                                </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if appraisal.Status == "Supervisor Appraisal" and appraisal.CurrentQuarter != '4th Quarter' and HOD_User == True %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="myForm my-3">
+                    <form action="{% url 'FnMovetoNextQuarter' appraisal.Code %}" method="POST"
+                        style="display: inline-block;">
+                        {% csrf_token %}
+                        <button class="btn btn-info" type="submit">Move to Next Quarter </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% elif appraisal.Status == "Self Appraisal" and appraisal.CurrentQuarter != '1st Quarter' and HOD_User == False %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="myForm my-3">
+                    <form action="{% url 'FnsendforReview' appraisal.Code %}" method="POST"
+                        style="display: inline-block;">
+                        {% csrf_token %}
+                        <button class="btn btn-info" type="submit">Submit For Review </button>
+                    </form>
+                    <form action="{% url 'FnSendforFurtherReview' appraisal.Code %}" method="POST" class="myForm"
+                        style="display: inline-block;">
+                        {% csrf_token %}
+                        <button class="btn btn-info" type="submit">Send For Further Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% elif appraisal.Status == "Self Appraisal" and appraisal.CurrentQuarter == '1st Quarter' and HOD_User == False %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="myForm my-3">
+                    <form action="{% url 'FnsendforReview' appraisal.Code %}" method="POST"
+                        style="display: inline-block;">
+                        {% csrf_token %}
+                        <button class="btn btn-info" type="submit">Submit For Review </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+
+</section>
+<!-- Modal -->
+<div class="modal fade" id="Attachment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Attachment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'EmployeeAppraisalAttachment' appraisal.Code %}" method="post" class="myForm"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class=" mb-3">
+                        <label class="form-label">Attachments </label>
+                        <input class="form-control" name="attachment" type="file" multiple>
+                    </div>
+                    <button type="submit" class="btn btn-success my-3 w-100">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Training Modal -->
+<!-- Modal -->
+<div class="modal fade" id="trainingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Training</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="myForm" action="{% url 'FnRecommendedTrainings' %}" method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" name="myAction" value="insert">
+                            <input type="hidden" name="LineNo" value="0">
+                            {% if appraisal.Status == 'Self Appraisal' %}
+                            <input type="hidden" name="selfAppraisal" value="True">
+                            {% elif appraisal.Status == 'Supervisor Appraisal' %}
+                            <input type="hidden" name="selfAppraisal" value="False">
+                            {% endif %}
+                            <input type="hidden" name="appraisalCode" value="{{appraisal.Code}}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label">Any
+                                Recommend
+                                Training
+                                ?</label>
+                            <textarea class="form-control" name="recommendedTraining" rows="3"></textarea>
+                            <div class="form-text">
+                                Add any
+                                recommended
+                                training
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success my-3 w-100">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".otherPager .otherPageItem").slice(3).hide();
+        $('#otherPagination').pagination({
+            items: '{{other_targets_count}}',
+            itemsOnPage: 3,
+            cssStyle: 'compact-theme',
+
+            onPageClick: function (noofele) {
+                $(".otherPager .otherPageItem").hide()
+                    .slice(3 * (noofele - 1),
+                        3 + 3 * (noofele - 1)).show();
+            },
+
+        });
+
+        var fixmeTop = $('.inner-breadcrumb').offset().top;
+
+        $(window).scroll(function () {
+
+            var currentScroll = $(window).scrollTop();
+
+            if (currentScroll >= fixmeTop) {
+                $('.inner-breadcrumb').css({
+                    position: 'fixed',
+                    top: '0',
+                    left: '0'
+                });
+            } else {
+                $('.inner-breadcrumb').css({
+                    position: 'static'
+                });
+            }
+
+        });
+    })
+</script>
+
+{% endblock %}

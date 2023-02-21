@@ -1,0 +1,587 @@
+{% extends 'offcanvas.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper">
+        <div class="row mb-2">
+            <div class="col-md-12 d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb d-flex justify-content-start inner-breadcrumb" style="margin-left: -1.1rem;">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'training_request' %}" class="breadcrumbs text-dark">
+                            <span class="brs">{{res.Status}} </span> Training Requests
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                            {{res.Request_No_}}
+                        </span>
+                    </li>
+                </ol>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {% if res.Adhoc == True and res.Status == "Open"  %}
+                    <button class="btn btn-successs me-md-2" type="button" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"><i class="las la-plus"></i> Add
+                        Training Lines</button>
+                    {% endif %}
+                    {% if res.Status == "Open" %}
+                    <button class="btn btn-successs" type="button" data-bs-toggle="modal" data-bs-target="#Attachment">
+                        <i class="fas fa-upload mr-1" style="display:inline-block"></i> Upload Attachment</button>
+                    {% elif res.Status == "Released" %}
+                    <form action="{% url 'FnGenerateTrainingReport' res.Request_No_ %}" method="post"
+                        style="display:inline-block">
+                        {% csrf_token %}
+                        <button class="btn btn-successs" type="submit"> Preview Report</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        {% if res.Adhoc == False %}
+        <div class="overview-content mt-4 row">
+            <div class="col-md-4">
+                <label class="custom-control" style="margin-left: -1.3rem;">
+                    <img src="../../static/icons/loading.png" height="20" width="20" class="img-fluid" alt="">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Adhoc:
+                        <span class="brs">
+                            {% if res.Adhoc == True %}
+                            Yes
+                            {% elif res.Adhoc == False %}
+                            No
+                            {% endif %}
+                        </span>
+                    </span>
+                </label>
+            </div>
+            <div class="col-md-4">
+                <label class="custom-control custom-checkbox mb-3">
+                    <img src="../../static/icons/schedule.png" height="20" width="20" class="img-fluid" alt="">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Planned Start Date: <span class="brs"
+                            id="planned_start_date">{{res.planned_start_date}}</span></span>
+
+                </label>
+            </div>
+            <div class="col-md-4">
+                <label class="custom-control custom-checkbox mb-3">
+                    <img src="../../static/icons/schedule.png" height="20" width="20" class="img-fluid" alt="">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No. of Days: <span id="due_date_card"
+                            class="brs">{{res.No__Of_Days}}</span></span>
+                </label>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                <div id="accordion" class="accordion-style">
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                    Details
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                            data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Request Number</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Request_No_}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Adhoc</label>
+                                                <input type="text" class="form-control" placeholder="{{res.Adhoc}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Request Date</label>
+                                                <input type="text" class="form-control" id="request_date"
+                                                    placeholder="{{res.Request_Date}}" readonly>
+                                            </div>
+                                            {% if res.Adhoc == False %}
+                                            <div class="col-md-4">
+                                                <label class="form-label">Training Name</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Description}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Training Need</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{res.Training_Need}}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Planned End Date</label>
+                                                <input type="text" class="form-control" id="planned_end_date"
+                                                    placeholder="{{res.Planned_End_Date}}" readonly>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Venue</label>
+                                                <input type="text" class="form-control" placeholder="{{res.Venue}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Provider</label>
+                                                <input type="text" class="form-control" placeholder="{{res.Provider}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">Training Objectives</label>
+                                                <textarea class="form-control" placeholder="{{res.Training_Objectives}}"
+                                                    readonly></textarea>
+                                            </div>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if res.Adhoc == True %}
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingTwo">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false"
+                                    aria-controls="collapseTwo">Adhoc Training Lines</button>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <table id="example"
+                                    class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr id="tops">
+                                            <th id="long">Training Name</th>
+                                            <th>Training Area</th>
+                                            <th>Training Objectives</th>
+                                            <th>Location</th>
+                                            <th>Venue</th>
+                                            <th>Provider</th>
+                                            {% if res.Status == "Open" %}
+                                            <th>Action</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for line in line %}
+                                        <tr>
+                                            <td>{{line.Training_Name}}</td>
+                                            <td>{{line.Training_area}}</td>
+                                            <td>{{line.Training_Objectives}}</td>
+                                            <td>{{line.Location}}</td>
+                                            <td>{{line.Venue}}</td>
+                                            <td>{{line.Provider}}</td>
+                                            {% if res.Status == "Open" %}
+                                            <td>
+                                                <form action="{% url 'FnAdhocLineDelete' line.Source_Document_No %}"
+                                                    method="post" style="display: inline-block;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="needNo" value="{{line.No}}">
+                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip"
+                                                        data-placement="top" title="Delete"><i
+                                                            class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">My
+                                    Attachments</button>
+                            </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                            data-bs-parent="#accordion">
+                            <div class="row m-2">
+                                {% for data in file %}
+                                <div class="col-lg-4 col-xl-3">
+                                    <div class="file-man-box">
+                                        <div class="file-img-box"><img src="../../static/img/logo/f1.png" alt="icon">
+                                        </div>
+                                        <form action="{% url 'getDocs' data.No_ data.Table_ID %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="attachmentID" value="{{data.AuxiliaryIndex2}}">
+                                            <input type="hidden" name="File_Name" value="{{data.File_Name}}">
+                                            <input type="hidden" name="File_Extension" value="{{data.File_Extension}}">
+                                            <button class="file-download mx-1"><i
+                                                    class="fa fa-download text-success"></i></button>
+                                        </form>
+                                        <div class="file-man-title">
+                                            <h5 class="mb-0 text-overflow">
+                                                {{data.File_Name}}.{{data.File_Extension}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <img src="../../static/icons/empty-box.png" class="img-fluid" height="100" width="100"
+                                    alt="">
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+        <div class="row my-2 py-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            Rejection Comments
+                        </h4>
+                        <div class="row">
+                            <div class="chat-history">
+                                <ul class="m-b-0">
+                                    {% for comment in Comments %}
+                                    <li class="clearfix">
+                                        <div class="message-data">
+                                            <span class="message-data-time">{{comment.User_ID}}</span>
+                                        </div>
+                                        <div class="message my-message">{{comment.Comment}}</div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                {% if res.Status == "Open" %}
+                <div class=" my-3 myForm">
+                    <div style="display: inline-block;">
+                        <form action="{% url 'TrainApprove' res.Request_No_ %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="hidden" name="trainingNo" value="{{res.Request_No_}}">
+                            </div>
+                            <button class="btn btn-info" type="submit">Request For Approval</button>
+                        </form>
+                    </div>
+                </div>
+                {% elif res.Status == "Pending Approval" %}
+                <div class="d-grid gap-2 my-3">
+                    <form action="{% url 'TrainCancel' res.Request_No_ %}" method="post" class="myForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="hidden" name="trainingNo" value="{{res.Request_No_}}">
+                        </div>
+                        <button class="btn btn-info" type="submit">Cancel Request For Approval</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% if res.Status == "Pending Approval" %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card" id="d-card">
+                    <h4 class="mt-2 mx-2 text-dark">Document Approvers</h4>
+                    <div class="card-body">
+                        <table id="example"
+                            class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                            style="width:100%">
+                            <thead>
+                                <tr id="tops">
+                                    <th id="long">Entry No.</th>
+                                    <th>Name</th>
+                                    <th>Sequence</th>
+                                    <th>Status</th>
+                                    <th>Modified By</th>
+                                    <th>Modified Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for Approvers in Approvers %}
+                                <tr>
+                                    <td>{{Approvers.Entry_No_}}</td>
+                                    <td>{{Approvers.Approver_ID}}</td>
+                                    <td>{{Approvers.Sequence_No_}}</td>
+                                    <td>{{Approvers.Status}}</td>
+                                    <td>{{Approvers.Last_Modified_By_User_ID}}</td>
+                                    <td id="ModifiedDate{{Approvers.Entry_No_}}">
+                                        {{Approvers.Last_Date_Time_Modified}}
+                                    </td>
+                                    <script>
+                                        $("#ModifiedDate{{Approvers.Entry_No_}}")
+                                            .empty()
+                                            .append(moment(
+                                                    '{{Approvers.Last_Date_Time_Modified}}', "YYYY-MM-DD")
+                                                .format(
+                                                    'Do MMM YYYY'));
+                                    </script>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Training Line
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm needs-validation" action="{% url 'TrainingDetail' res.Request_No_ %}"
+                        method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row gx-1">
+                            <div class="col-md-4">
+                                <label class="form-label">Training Course</label>
+                                <input type="text" class="form-control" name="trainingName" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="" class="form-label">Field of Training</label>
+                                <input type="text" class="form-control" name="trainingArea" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Training Type</label>
+                                <select class="form-select" name="trainType" id="trainType" required>
+                                    <option selected disabled value="">Select </option>
+                                    <option value="1">Physical</option>
+                                    <option value="2">Online</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-2" id="travelTypeRow" style="display: none;">
+                            <div class="col-md-12">
+                                <label class="form-label">Travel Type</label>
+                                <select class="form-select" name="travelType" id="travelType" disabled>
+                                    <option selected disabled value="">Select </option>
+                                    <option value="1">Local</option>
+                                    <option value="2">Foreign</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row my-2" id="LocaldestinationsRow" style="display:none">
+                            <div class="col-md-12">
+                                <label class="form-label">Local Destination</label>
+                                <select class="form-select myDestinations" name="destination" id="destinationsLocal"
+                                    disabled>
+                                    <option selected disabled value="">Select </option>
+                                    {% for res in local %}
+                                    <option value="{{res.Destination_Code}}">{{res.Destination_Code}}</option>
+                                    {% endfor %}
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-2" id="ForegnDestinationsRow" style="display:none">
+                            <div class="col-md-12">
+                                <label class="form-label">Foreign Destination</label>
+                                <select class="form-select myDestinations" name="destination" id="destinationsForeign"
+                                    disabled>
+                                    <option selected disabled value="">Select </option>
+                                    {% for res in foreign %}
+                                    <option value="{{res.Destination_Code}}">{{res.Destination_Code}}</option>
+                                    {% endfor %}
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-2 OtherDestinationRow" style="display:none">
+                            <div class="col-md-12">
+                                <label class="form-label">Other Destination</label>
+                                <input type="text" class="form-control" name="OtherDestinationName"
+                                    id="OtherDestinationName" disabled>
+                            </div>
+                        </div>
+                        <div class="row my-2" id="venueRow" style="display: none">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Venue</label>
+                                <input type="text" class="form-control" name="venue" id="venue" disabled>
+                            </div>
+                        </div>
+                        <div class="row my-2 gx-1">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">Start Date:</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="date" class="form-control" id="adhoc_start_date" name="startDate"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">End Date:</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="date" class="form-control" id="adhoc_end_date" name="endDate"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-2 gx-1">
+                            <div class="col-md-4">
+                                <label class="form-label">Sponsor Type</label>
+                                <select class="form-select" name="sponsor" required>
+                                    <option selected disabled value="0">Select </option>
+                                    <option value="1">Self Sponsored</option>
+                                    <option value="2">Organization Sponsored</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="" class="form-label">Provider</label>
+                                <input type="text" class="form-control" name="provider" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="" class="form-label">Training Cost</label>
+                                <input type="text" class="form-control" name="trainingCost" placeholder="00.00">
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Training Objectives</label>
+                                <textarea class="form-control" name="trainingObjectives" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="Attachment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Attachment</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'UploadTrainingAttachment' res.Request_No_ %}" method="post" class="myForm"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class=" mb-3">
+                            <label class="form-label">Attachments</label>
+                            <input class="form-control" name="attachment" type="file" multiple>
+                        </div>
+                        <button type="submit" class="button-88 w-100">Submit <i
+                                class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        // Get the start date input element
+        const startDateInput = document.getElementById('adhoc_start_date');
+
+        // Set the min attribute to today's date
+        startDateInput.min = new Date().toISOString().split('T')[0];
+
+        // Add an event listener to the start date input to update the end date input
+        startDateInput.addEventListener('input', () => {
+            const startDate = new Date(startDateInput.value);
+            const endDateInput = document.getElementById('adhoc_end_date');
+
+            // Set the min attribute of the end date input to the start date
+            endDateInput.min = startDate.toISOString().split('T')[0];
+        });
+
+        $("#request_date").attr("placeholder", moment(
+            '{{res.Request_Date}}', "YYYY-MM-DD").format(
+            'Do MMM YYYY')).val("").focus().blur();
+        $("#planned_start_date")
+            .empty().append(moment(
+                    '{{res.planned_start_date}}', "YYYY-MM-DD")
+                .format(
+                    'Do MMM YYYY'));
+        $("#planned_end_date").attr("placeholder", moment(
+            '{{res.Planned_End_Date}}', "YYYY-MM-DD").format(
+            'Do MMM YYYY')).val("").focus().blur();
+
+        $('#travelType').on('change', function () {
+            if (this.value == "1") {
+                $("#LocaldestinationsRow").show(1000);
+                $('#destinationsLocal').prop('disabled', false)
+            } else {
+                $("#ForegnDestinationsRow").show(1000);
+                $('#destinationsForeign').prop('disabled', false)
+                $("#LocaldestinationsRow").hide(1400);
+                $('#destinationsLocal').prop('disabled', true)
+            }
+        });
+        $('#trainType').on('change', function () {
+            if (this.value == "1") {
+                $("#travelTypeRow").show(1000);
+                $('#venueRow').show(1500)
+                $('#travelType').prop('disabled', false)
+                $('#venue').prop('disabled', false)
+            } else {
+                $("#travelTypeRow").hide(1000);
+                $('#travelType').prop('disabled', true)
+                $("#ForegnDestinationsRow").hide(1000);
+                $('#destinationsForeign').prop('disabled', true)
+                $("#LocaldestinationsRow").hide(1400);
+                $('#destinationsLocal').prop('disabled', true)
+                $('#venue').prop('disabled', true)
+                $('#venueRow').hide(1500)
+            }
+        });
+        $('.myDestinations').on('change', function () {
+            if (this.value == "Other") {
+                $(".OtherDestinationRow").show(1000);
+                $('#OtherDestinationName').prop('disabled', false)
+            } else {
+                $(".OtherDestinationRow").hide(1000);
+                $('#OtherDestinationName').prop('disabled', true)
+            }
+        });
+    })
+</script>
+{% endblock %}

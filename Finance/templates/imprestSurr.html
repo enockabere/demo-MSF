@@ -1,0 +1,424 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+IMPREST SURRENDER
+{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Imprest Surrender</h4>
+                        <span style="margin-left: auto;">
+                            <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="outline: none; border: none;">
+                                <i class="las la-plus text-white" style="font-size: 15px;"></i> New Surrender
+                            </button>
+                        </span>
+                    </div>
+                    <div class="m-4">
+                        <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                            <li class="nav-item flex-fill">
+                                <a href="#s-open" class="nav-link" data-bs-toggle="tab">Open
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{res|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#pending" class="nav-link" data-bs-toggle="tab">Pending Approval
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{pending|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#s-approve" class="nav-link active" data-bs-toggle="tab">Appproved
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{response|length}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="s-open">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Imprest No.</th>
+                                                <th>Date</th>
+                                                <th>Created By</th>
+                                                <th>Imprest Issue Doc No.</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in res %}
+                                            {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+                                            <tr style="background: #fee36e !important;">
+                                                <td>{{res.No_}}</td>
+                                                <td id="rejected_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.User_Id}}</td>
+                                                <td>{{res.Imprest_Issue_Doc__No}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#rejected_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.No_}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit"> Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="{% url 'IMPSurrender' res.No_  %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <div class="modal fade" id="trainedit{{res.No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Imprest
+                                                                        Surrender
+                                                                        <span class="editSpan">{{res.No_}}</span>
+
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm"
+                                                                        action="{% url 'imprestSurr' %}" method="post"
+                                                                        novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label for="" class="form-label">Imprest
+                                                                                    Issue
+                                                                                    Document No.
+                                                                                </label>
+                                                                                <select class="form-select"
+                                                                                    name="imprestIssueDocNo" required>
+                                                                                    <option selected disabled value="">
+                                                                                        Select
+                                                                                        Imprest Issue Document No.
+                                                                                    </option>
+                                                                                    {% for res in app %}
+                                                                                    <option value="{{res.No_}}">
+                                                                                        {{res.No_}}-{{res.Payment_Narration}}
+                                                                                    </option>
+                                                                                    {% endfor %}
+                                                                                </select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="myAction"
+                                                                                    value="modify">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="surrenderNo"
+                                                                                    value="{{res.No_}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label for="purpose"
+                                                                                    class="form-label">Purpose</label>
+                                                                                <textarea class="form-control"
+                                                                                    name="purpose" rows="3"
+                                                                                    required></textarea>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="open_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.User_Id}}</td>
+                                                <td>{{res.Imprest_Issue_Doc__No}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#open_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.No_}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit"> Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="{% url 'IMPSurrender' res.No_  %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <div class="modal fade" id="trainedit{{res.No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Imprest
+                                                                        Surrender
+                                                                        <span class="editSpan">{{res.No_}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm"
+                                                                        action="{% url 'imprestSurr' %}" method="post"
+                                                                        novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label for="" class="form-label">Imprest
+                                                                                    Issue
+                                                                                    Document No.
+                                                                                </label>
+                                                                                <select class="form-select"
+                                                                                    name="imprestIssueDocNo" required>
+                                                                                    <option selected disabled value="">
+                                                                                        Select
+                                                                                        Imprest Issue Document No.
+                                                                                    </option>
+                                                                                    {% for res in app %}
+                                                                                    <option value="{{res.No_}}">
+                                                                                        {{res.No_}}-{{res.Payment_Narration}}
+                                                                                    </option>
+                                                                                    {% endfor %}
+                                                                                </select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="myAction"
+                                                                                    value="modify">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <input type="hidden" name="surrenderNo"
+                                                                                    value="{{res.No_}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label for="purpose"
+                                                                                    class="form-label">Purpose</label>
+                                                                                <textarea class="form-control"
+                                                                                    name="purpose" rows="3"
+                                                                                    required></textarea>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit"
+                                                                            class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pending">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Imprest No.</th>
+                                                <th>Date</th>
+                                                <th>Created By</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in pending %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="pending_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.User_Id}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#pending_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'IMPSurrender' res.No_ %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show active" id="s-approve">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Imprest No.</th>
+                                                <th>Date</th>
+                                                <th>Created By</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in response %}
+                                            <tr>
+                                                <td>{{res.No_}}</td>
+                                                <td id="approved_request_date{{res.No_}}">{{res.Date}}</td>
+                                                <td>{{res.User_Id}}</td>
+                                                <td>{{res.Status}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#approved_request_date{{res.No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'IMPSurrender' res.No_  %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Raise Imprest Surrender
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm" action="{% url 'imprestSurr' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <label for="" class="form-label">Imprest Issue Document No.
+                                    </label>
+                                    <select class="form-select" name="imprestIssueDocNo" required>
+                                        <option selected disabled value="">Select Imprest Issue Document No.</option>
+                                        {% for res in app %}
+                                        <option value="{{res.No_}}">{{res.No_}}-{{res.Payment_Narration}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <input type="hidden" name="myAction" value="insert">
+                                    <input type="hidden" name="surrenderNo" value="">
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <label class="form-label">Purpose</label>
+                                    <textarea class="form-control" name="purpose" rows="3" required></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                    class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,469 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+SALARY ADVANCE
+{% endblock %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Salary Advance</h4>
+                        <span style="margin-left: auto;">
+                            <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="outline: none; border: none;">
+                                <i class="las la-plus text-white" style="font-size: 15px;"></i> New Request
+                            </button>
+                        </span>
+                    </div>
+                    <div class="m-4">
+                        <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                            <li class="nav-item flex-fill">
+                                <a href="#home" class="nav-link" data-bs-toggle="tab">Open
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{res|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#pending" class="nav-link" data-bs-toggle="tab">Pending Approval
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{pending|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#profile" class="nav-link active" data-bs-toggle="tab">Approved
+                                    <span class="ml-1 badge rounded-pill green_icon">
+                                        {{response|length}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="home">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Loan No.</th>
+                                                <th>Application Date</th>
+                                                <th>Loan Product</th>
+                                                <th>Loan Status</th>
+                                                <th>Amount Requested</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in res %}
+                                            {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+                                            <tr style="background: #fee36e !important;">
+                                                <td>{{res.Loan_No}}</td>
+                                                <td id="rejected_request_date{{res.Loan_No}}">{{res.Application_Date}}
+                                                </td>
+                                                <td id="rap">{{res.Loan_Product_Name}}</td>
+                                                <td>{{res.Loan_Status}}</td>
+                                                <td id="rejected_amount{{res.Loan_No}}">{{res.Amount_Requested}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#rejected_request_date{{res.Loan_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Application_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+
+                                                        $("#rejected_amount{{res.Loan_No}}").empty().append(
+                                                            currency(
+                                                                '{{res.Amount_Requested}}', {
+                                                                    separator: ','
+                                                                }).format());
+
+                                                    });
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.Loan_No}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="trainedit{{res.Loan_No}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Loan No
+                                                                        <span class="editSpan">{{res.Loan_No}}</span>
+
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm needs-validation"
+                                                                        action="{% url 'advance' %}" method="post"
+                                                                        novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2 myForm">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="loanNo"
+                                                                                        value="{{res.Loan_No}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Loan Type
+                                                                                        <span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <select class="form-select"
+                                                                                        name="productType" required>
+                                                                                        <option value="" disabled
+                                                                                            selected>
+                                                                                            --Select--</option>
+                                                                                        {% for res in salary %}
+                                                                                        <option value="{{res.Code}}">
+                                                                                            {{res.Description}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Amount
+                                                                                        <span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <input type="number"
+                                                                                        name="amountRequested"
+                                                                                        class="form-control"
+                                                                                        placeholder="000.000" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a href="{% url 'advanceDetail' res.Loan_No %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View">
+                                                        View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td>{{res.Loan_No}}</td>
+                                                <td id="open_request_date{{res.Loan_No}}">{{res.Application_Date}}</td>
+                                                <td id="rap">{{res.Loan_Product_Name}}</td>
+                                                <td>{{res.Loan_Status}}</td>
+                                                <td id="open_amount{{res.Loan_No}}">{{res.Amount_Requested}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#open_request_date{{res.Loan_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Application_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+
+                                                        $("#open_amount{{res.Loan_No}}").empty().append(
+                                                            currency(
+                                                                '{{res.Amount_Requested}}', {
+                                                                    separator: ','
+                                                                }).format());
+
+                                                    });
+                                                </script>
+                                                <td>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#trainedit{{res.Loan_No}}" data-toggle="tooltip"
+                                                        data-placement="top" title="edit">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="trainedit{{res.Loan_No}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Loan No
+                                                                        <span class="editSpan">{{res.Loan_No}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm" action="{% url 'advance' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2 myForm">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="loanNo"
+                                                                                        value="{{res.Loan_No}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Loan Type
+                                                                                        <span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <select class="form-select"
+                                                                                        name="productType" required>
+                                                                                        <option value="" disabled
+                                                                                            selected>
+                                                                                            --Select--</option>
+                                                                                        {% for res in salary %}
+                                                                                        <option value="{{res.Code}}">
+                                                                                            {{res.Description}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Amount
+                                                                                        <span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <input type="number"
+                                                                                        name="amountRequested"
+                                                                                        class="form-control"
+                                                                                        placeholder="000.000" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Repayment
+                                                                                        Installments(1-12 month(s))
+                                                                                        <span
+                                                                                            class="text-danger">*</span></label>
+                                                                                    <input type="number"
+                                                                                        name="installments"
+                                                                                        class="form-control" min="1"
+                                                                                        max="12" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                </div>
+                                <a href="{% url 'advanceDetail' res.Loan_No %}" class="btn btn-success btn-icon-text"
+                                    type="button" data-toggle="tooltip" data-placement="top" title="Click to View"> View
+                                    <i class="far fa-eye"></i>
+                                </a>
+                                </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pending">
+
+                            <div class="card-body">
+                                <table id="example"
+                                    class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr id="tops">
+                                            <th id="long">Loan No.</th>
+                                            <th>Application Date</th>
+                                            <th>Loan Product</th>
+                                            <th>Loan Status</th>
+                                            <th>Amount Requested</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for res in pending %}
+                                        <tr>
+                                            <td>{{res.Loan_No}}</td>
+                                            <td id="pending_request_date{{res.Loan_No}}">{{res.Application_Date}}</td>
+                                            <td id="rap">{{res.Loan_Product_Name}}</td>
+                                            <td>{{res.Loan_Status}}</td>
+                                            <td id="pending_amount{{res.Loan_No}}">{{res.Amount_Requested}}</td>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $("#pending_request_date{{res.Loan_No}}")
+                                                        .empty().append(moment(
+                                                                '{{res.Application_Date}}', "YYYY-MM-DD")
+                                                            .format(
+                                                                'Do MMM YYYY'));
+
+                                                    $("#pending_amount{{res.Loan_No}}").empty().append(currency(
+                                                        '{{res.Amount_Requested}}', {
+                                                            separator: ','
+                                                        }).format());
+
+                                                });
+                                            </script>
+                                            <td>
+                                                <a href="{% url 'advanceDetail' res.Loan_No %}"
+                                                    class="btn btn-success btn-icon-text" type="button"
+                                                    data-toggle="tooltip" data-placement="top" title="Click to View">
+                                                    View <i class="far fa-eye"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show active" id="profile">
+                            <div class="card-body">
+                                <table id="example"
+                                    class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr id="tops">
+                                            <th id="long">Loan No.</th>
+                                            <th>Application Date</th>
+                                            <th>Loan Product</th>
+                                            <th>Loan Status</th>
+                                            <th>Amount Requested</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for res in response %}
+                                        <tr>
+                                            <td>{{res.Loan_No}}</td>
+                                            <td id="approved_request_date{{res.Loan_No}}">{{res.Application_Date}}</td>
+                                            <td>{{res.Loan_Product_Name}}</td>
+                                            <td>{{res.Loan_Status}}</td>
+                                            <td id="approved_amount{{res.Loan_No}}">{{res.Amount_Requested}}</td>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $("#approved_request_date{{res.Loan_No}}")
+                                                        .empty().append(moment(
+                                                                '{{res.Application_Date}}', "YYYY-MM-DD")
+                                                            .format(
+                                                                'Do MMM YYYY'));
+
+                                                    $("#approved_amount{{res.Loan_No}}").empty().append(
+                                                        currency(
+                                                            '{{res.Amount_Requested}}', {
+                                                                separator: ','
+                                                            }).format());
+
+                                                });
+                                            </script>
+                                            <td>
+                                                <a href="{% url 'advanceDetail' res.Loan_No %}"
+                                                    class="btn btn-success btn-icon-text" type="button"
+                                                    data-toggle="tooltip" data-placement="top" title="Click to View">
+                                                    View <i class="far fa-eye"></i></a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Salary Advance
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm " action="{% url 'advance' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" name="loanNo" value="">
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label class="form-label">Loan Type <span class="text-danger">*</span></label>
+                                <select class="form-select" name="productType" required>
+                                    <option value="" disabled selected>--Select--</option>
+                                    {% for res in salary %}
+                                    <option value="{{res.Code}}">{{res.Description}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label class="form-label">Amount <span class="text-danger">*</span></label>
+                                <input type="number" name="amountRequested" class="form-control" placeholder="000.000"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label class="form-label">Repayment Installments(1-12 month(s)) <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" name="installments" class="form-control" min="1" max="12" required>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <input type="hidden" name="myAction" value="insert">
+                            </div>
+                        </div>
+                        <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+{% endblock %}

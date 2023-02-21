@@ -1,0 +1,69 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+P9
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5 my-4" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3"> Payroll Documents</h4>
+                    </div>
+                    <form class="d-flex" action="{% url 'PayrollDocuments' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row w-100 gx-1">
+                            <div class="col-md-6 d-flex">
+                                <select class="form-select" id="document-select" name="document_type" required>
+                                    <option selected disabled value="0">--Select Document--</option>
+                                    <option value="1">Payslip</option>
+                                    <option value="2">P9</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 d-flex">
+                                <select class="form-select" name="startDate" required>
+                                    <option selected disabled value="0">--Select Payment Period--</option>
+                                    {% for res in res %}
+                                    <option value="{{res.Starting_Date}}">{{res.Starting_Date|slice:"4" }}</option>
+                                    {% empty %}
+                                    <option disabled value="0">No Closed Payment Period</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-12 my-5 d-flex">
+                                <button type="submit" class="button-88 w-100" id="submit-button">Select Payroll
+                                    Document<i class="las la-arrow-right submit-icon"></i></button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(document).ready(function () {
+        $("#document-select").change(function () {
+            var selectedOption = $("#document-select option:selected").text();
+            if (selectedOption === "Payslip") {
+                $("#submit-button").text("Preview Payslip");
+            } else if (selectedOption === "P9") {
+                $("#submit-button").text("Preview P9");
+            } else {
+                $("#submit-button").text("Select Payroll Document");
+            }
+        });
+    });
+</script>
+{% endblock %}

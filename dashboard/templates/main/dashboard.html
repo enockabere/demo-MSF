@@ -1,0 +1,397 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+DASHBOARD
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="../../../static/css/profile.css" />
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+{% endblock %}
+{% block main %}
+<section>
+    <div class="content-wrapper general-bg">
+        {% include 'alerts.html' %}
+        <div class="row g-1">
+            <div class="col-md-3 mb-2">
+                <div class="card summ-cards">
+                    <div class="card-title">
+                        Human Resource Summary
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="c-content c1">
+                                    <h6>Leave Requests</h6>
+                                    <small>{{total_leave}}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="c-content">
+                                    <h6>Training Requests</h6>
+                                    <small>{{total_training}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-2">
+                <div class="card summ-cards3">
+                    <div class="card-title">
+                        Finance Summary
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="c-content c1">
+                                    <h6>Imprest Requisition</h6>
+                                    <small>{{total_imprest}}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="c-content c2">
+                                    <h6>Imprest Surrender</h6>
+                                    <small>{{total_surrender}}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="c-content">
+                                    <h6>Staff Claim</h6>
+                                    <small>{{total_claims}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card summ-cards3">
+                    <div class="card-title">
+                        Procurement Summary
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="c-content c1">
+                                    <h6>Purchase Requests</h6>
+                                    <small>{{total_purchase}}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="c-content c2">
+                                    <h6>Repair Request</h6>
+                                    <small>{{total_repair}}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="c-content">
+                                    <h6>Store Requests</h6>
+                                    <small>{{total_store}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'main/top-stats.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane"
+                                aria-selected="true">Open Requests
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#profile-tab-pane" type="button" role="tab"
+                                aria-controls="profile-tab-pane" aria-selected="false">Requests Pending Approval
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#contact-tab-pane" type="button" role="tab"
+                                aria-controls="contact-tab-pane" aria-selected="false">Approved Requests</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="file-tab" data-bs-toggle="tab" data-bs-target="#file-tab-pane"
+                                type="button" role="tab" aria-controls="file-tab-pane" aria-selected="false"><i
+                                    class="las la-cloud-download-alt text-success"></i> P9/Payslip</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                            aria-labelledby="home-tab" tabindex="0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <canvas id="Chart1"></canvas>
+                                    <script>
+                                        const open_label = [
+                                            'Leave',
+                                            'Training',
+                                            'Imprest Requisition',
+                                            'Imprest Surrender',
+                                            'Staff Claim',
+                                            'Purchase ',
+                                            'Repair Requests',
+                                            'Store Requests',
+                                            'Salary Advance',
+                                            'General Requisitions'
+                                        ];
+
+                                        var open_leave = '{{open_leave}}'
+                                        var open_training = '{{open_training}}'
+                                        var open_imprests = '{{open_imprests}}'
+                                        var open_surrender = '{{open_surrender}}'
+                                        var open_claim = '{{open_claim}}'
+                                        var open_purchase = '{{open_purchase}}'
+                                        var open_repair = "{{open_repair}}"
+                                        var open_store = '{{open_store}}'
+                                        var open_advances = '{{open_advances}}'
+                                        var open_general = '{{open_general}}'
+                                        const open_data = {
+                                            labels: open_label,
+                                            datasets: [{
+                                                label: 'Open Requests',
+                                                backgroundColor: [
+                                                    '#ff5e6c',
+                                                    '#DFFF00',
+                                                    '#8076a3',
+                                                    '#FFBF00',
+                                                    '#9FE2BF',
+                                                    '#8076a3',
+                                                    '#DFFF00',
+                                                ],
+                                                borderColor: 'rgb(255, 99, 132)',
+                                                data: [open_leave, open_training, open_imprests,
+                                                    open_surrender, open_claim,
+                                                    open_purchase,
+                                                    open_repair,
+                                                    open_store,
+                                                    open_advances,
+                                                    open_general,
+                                                ],
+                                            }]
+                                        };
+
+                                        const open_config = {
+                                            type: 'bar',
+                                            data: open_data,
+                                            options: {}
+                                        };
+
+                                        const Chart1 = new Chart(
+                                            document.getElementById('Chart1'),
+                                            open_config
+                                        );
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab"
+                            tabindex="0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <canvas id="Chart2"></canvas>
+                                    <script>
+                                        const pending_label = [
+                                            'Leave',
+                                            'Training',
+                                            'Imprest Requisition',
+                                            'Imprest Surrender',
+                                            'Staff Claim',
+                                            'Purchase ',
+                                            'Repair Requests',
+                                            'Store Requests',
+                                            'Salary Advance',
+                                            'General Requisitions'
+                                        ];
+
+                                        var pending_leave = "{{pending_leave}}"
+                                        var pendTrain = '{{pendTrain}}'
+                                        var pending_imprest = '{{pending_imprest}}'
+                                        var pending_surrender = '{{pending_surrender}}'
+                                        var pending_claims = '{{pending_claims}}'
+                                        var pending_purchase = '{{pending_purchase}}'
+                                        var pending_repair = '{{pending_repair}}'
+                                        var pending_store = '{{pending_store}}'
+                                        var Pending_advances = '{{Pending_advances}}'
+                                        var pending_general = '{{pending_general}}'
+
+                                        const pending_data = {
+                                            labels: pending_label,
+                                            datasets: [{
+                                                label: 'Pending Requests',
+                                                backgroundColor: [
+                                                    '#ff5e6c',
+                                                    '#DFFF00',
+                                                    '#8076a3',
+                                                    '#FFBF00',
+                                                    '#9FE2BF',
+                                                    '#8076a3',
+                                                    '#ff5e6c',
+                                                ],
+                                                borderColor: 'rgb(255, 99, 132)',
+                                                data: [pending_leave, pendTrain, pending_imprest,
+                                                    pending_surrender, pending_claims,
+                                                    pending_purchase,
+                                                    pending_repair,
+                                                    pending_store,
+                                                    Pending_advances,
+                                                    pending_general
+                                                ],
+                                            }]
+                                        };
+
+                                        const pending_config = {
+                                            type: 'bar',
+                                            data: pending_data,
+                                            options: {}
+                                        };
+
+                                        const Chart2 = new Chart(
+                                            document.getElementById('Chart2'),
+                                            pending_config
+                                        );
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
+                            tabindex="0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <canvas id="Chart6"></canvas>
+                                    <script>
+                                        const approved_label = [
+                                            'Leave',
+                                            'Training',
+                                            'Imprest Requisition',
+                                            'Imprest Surrender',
+                                            'Staff Claim',
+                                            'Purchase ',
+                                            'Repair Requests',
+                                            'Store Requests',
+                                            'Salary Advance',
+                                            'General Requisitions'
+                                        ];
+
+                                        var app_leave_list = '{{app_leave_list}}'
+                                        var app_train_list = '{{app_train_list}}'
+                                        var app_imprest_list = '{{app_imprest_list}}'
+                                        var app_surrender_list = '{{app_surrender_list}}'
+                                        var app_claim_list = '{{app_claim_list}}'
+                                        var app_purchase_list = '{{app_purchase_list}}'
+                                        var app_repair_list = '{{app_repair_list}}'
+                                        var app_store_list = '{{app_store_list}}'
+                                        var approved_advances = '{{approved_advances}}'
+                                        var approved_general = '{{approved_general}}'
+
+                                        const approved_data = {
+                                            labels: approved_label,
+                                            datasets: [{
+                                                label: 'Approved Requests',
+                                                backgroundColor: [
+                                                    '#ff5e6c',
+                                                    '#DFFF00',
+                                                    '#8076a3',
+                                                    '#FFBF00',
+                                                    '#9FE2BF',
+                                                    '#FFBF00',
+                                                    '#8076a3',
+                                                ],
+                                                borderColor: 'rgb(255, 99, 132)',
+                                                data: [app_leave_list, app_train_list, app_imprest_list,
+                                                    app_surrender_list, app_claim_list,
+                                                    app_purchase_list,
+                                                    app_repair_list,
+                                                    app_store_list,
+                                                    approved_advances,
+                                                    approved_general
+                                                ],
+                                            }]
+                                        };
+
+                                        const approved_config = {
+                                            type: 'line',
+                                            data: approved_data,
+                                            options: {}
+                                        };
+
+                                        const Chart6 = new Chart(
+                                            document.getElementById('Chart6'),
+                                            approved_config
+                                        );
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="file-tab-pane" role="tabpanel" aria-labelledby="file-tab"
+                            tabindex="0">
+                            <div class="row p-3 gx-1">
+                                <div class="col-md-6 mb-5">
+                                    <div class="card pb-4 document_card h-100">
+                                        <div class="document_top_icon mt-3">
+                                            <img src="../../../static/icons/file_download.png" height="50" width="50"
+                                                class="img-fluid" alt="" srcset="">
+                                        </div>
+                                        <p class="h4 pt-4">P9 Form</p>
+                                        <p class="p1 text-muted">
+                                            Download P9 from recently closed payroll period(<span class="brs"
+                                                id="starting_date_card">{{payroll_period.Starting_Date}}</span>).
+                                        </p>
+                                        <script>
+                                            $(document).ready(function () {
+                                                $("#starting_date_card")
+                                                    .empty().append(moment(
+                                                            '{{payroll_period.Starting_Date}}', "YYYY-MM-DD")
+                                                        .format(
+                                                            'Do MMM YYYY'));
+                                            });
+                                        </script>
+                                        <form action="{% url 'pNine' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="startDate"
+                                                value="{{payroll_period.Starting_Date}}">
+                                            <button class="btn download_submit" type="submit"><span
+                                                    class="fa fa-download"></span></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-5">
+                                    <div class="card pb-4 document_card h-100">
+                                        <div class="document_top_icon mt-3">
+                                            <img src="../../../static/icons/file_download.png" height="50" width="50"
+                                                class="img-fluid" alt="" srcset="">
+                                        </div>
+                                        <p class="h4 pt-4">Payslip</p>
+                                        <p class="p1 text-muted">
+                                            Download payslip for (<span
+                                                class="brs">{{payroll_period.Starting_Date|slice:"4" }}
+                                                - {{payroll_period.Name}}</span>).
+                                        </p>
+                                        <form action="{% url 'payslip' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="paymentPeriod"
+                                                value="{{payroll_period.Starting_Date}}">
+                                            <button class="btn download_submit" type="submit"><span
+                                                    class="fa fa-download"></span></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}

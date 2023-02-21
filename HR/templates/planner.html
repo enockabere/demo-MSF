@@ -1,0 +1,101 @@
+{% extends 'offcanvas.html' %}
+
+{% block title %}
+LEAVE PLANNER
+{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 2rem;">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumbs text-muted">
+                            Leave Planner
+                        </span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card card-body data-card">
+                    <h1 class="heading display-5 pb-3"><img src="../../../static/img/logo/fav.png" width="70px"
+                            class="img-fluid"> Annual Leave Plan
+                        <span>
+                            <form action="{% url 'LeavePlanner' %}" method="post" style="float: right">
+                                {% csrf_token %}
+                                <input type="hidden" name="plannerNo" value="">
+                                <input type="hidden" name="myAction" value="insert">
+                                <button type="submit" class="btn btn-successs align-items-center"><i
+                                        class="las la-plus text-white" style="font-size:15px;"></i>New Leave
+                                    Plan</button>
+                            </form>
+                        </span>
+                    </h1>
+                    <div class="card" id="d-card">
+                        <div class="m-4">
+                            <table id="example"
+                                class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                style="width:100%">
+                                <thead>
+                                    <tr id="tops">
+                                        <th id="long">Plan No.</th>
+                                        <th>Employee No. </th>
+                                        <th>Document Date</th>
+                                        <th>Days Planned</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for res in res %}
+                                    <tr>
+                                        <td>{{res.No_}}</td>
+                                        <td id="rap">{{res.Employee_No_}}</td>
+                                        <td id="document_date{{res.No_}}">{{res.Date}}</td>
+                                        <script>
+                                            $(document).ready(function () {
+                                                $("#document_date{{res.No_}}").empty().append(moment(
+                                                    '{{res.Date}}', "YYYY-MM-DD").format(
+                                                    'Do MMM YYYY'));
+                                            })
+                                        </script>
+                                        <td>{{res.Days_Planned}}</td>
+                                        <td>
+                                            <a href="{% url 'PlanDetail' res.No_ %}" class="btn btn-success"
+                                                type="button" data-toggle="tooltip" data-placement="top"
+                                                title="Click to View">View <i class="las la-arrow-circle-right"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+{% endblock %}

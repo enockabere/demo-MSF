@@ -1,0 +1,61 @@
+<div class="row my-2">
+    <div class="col-md-12">
+        <div class="card card-body data-card">
+            <h1 class="heading display-5 pb-3"><img src="../../../static/img/logo/fav.png" width="70px"
+                    class="img-fluid"> Appraisals<span><button class="btn btn-success align-items-center"
+                        style="float: right;">{{today}} <span id="timer"></span></button></span>
+            </h1>
+            <div class="row gy-2 top-part">
+                <div class="col-md-12">
+                    <div class="row g-2">
+                        <div class="col-md-6 m-15px-tb">
+                            <div class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                    <i class="number"><i class="las la-briefcase"></i></i>
+                                </div>
+                                <div class="p-20px-l media-body">
+                                    <h6 class="m-5px-tb">Department Name</h6>
+                                    <p class="m-0px font-small">{{department}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6  m-15px-tb">
+                            <div class="media box-shadow-only-hover hover-top border-all-1 border-color-gray p-15px">
+                                <div class="icon-50 theme-bg white-color border-radius-50 d-inline-block">
+                                    <i class="number"><i class="las la-users"></i></i>
+                                </div>
+                                <div class="p-20px-l media-body">
+                                    <h6 class="m-5px-tb">Number of Employees in Department</h6>
+                                    <p class="m-0px font-small">{{DPTCount}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-4">
+                        <div class="col-md-12">
+                            <h5 class="pb-3 text-muted">Select Financial Year</h5>
+                            <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                                {% for financialYear in outputFinancialYear%}
+                                <div class="timeline-step mb-0">
+                                    <a href="{% url 'HODAppraisalRequests' financialYear.Code %}"
+                                        style="text-decoration: none;">
+                                        <div class="timeline-content" data-toggle="popover" data-trigger="hover"
+                                            data-placement="top" title=""
+                                            data-content="And here's some amazing content. It's very engaging. Right?"
+                                            data-original-title="2020">
+                                            <div class="inner-circle"></div>
+                                            <p class="h6 mt-3 mb-1 timeline_steps">{{department}}</p>
+                                            <p class="h6 text-secondary mb-0 mb-lg-0 timeline_steps">
+                                                {{financialYear.Description}} Year</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

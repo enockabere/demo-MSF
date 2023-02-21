@@ -1,0 +1,663 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+LEAVE REQUEST
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/css/boot/css/style.css" />
+{% endblock %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Leave Requests</h4>
+                        <span style="margin-left: auto;">
+                            <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="outline: none; border: none;">
+                                <i class="las la-plus text-white" style="font-size: 15px;"></i> New Leave Request
+                            </button>
+                        </span>
+                    </div>
+
+                    <div class="top-part">
+                        <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                            <li class="nav-item flex-fill">
+                                <a href="#profile" class="nav-link" data-bs-toggle="tab">Open
+                                    <span class="ml-3  badge rounded-pill olive_icon">
+                                        {{res|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#pending" class="nav-link" data-bs-toggle="tab">Pending Approval
+                                    <span class="ml-3   badge rounded-pill olive_icon">
+                                        {{pending|length}}
+                                    </span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item flex-fill">
+                                <a href="#home" class="nav-link active" data-bs-toggle="tab"> Approved
+                                    <span class="ml-3 badge rounded-pill olive_icon">
+                                        {{response|length}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="home">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Application No.</th>
+                                                <th>Status</th>
+                                                <th>Start Date</th>
+                                                <th>Return same day</th>
+                                                <th>Days Applied</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in response %}
+                                            <tr>
+                                                <td>{{res.Application_No}}</td>
+                                                <td id="rap">{{res.Status}}</td>
+                                                <td id="approved_planner_start_date{{res.Application_No}}">
+                                                    {{res.Planner_Start_Date}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#approved_planner_start_date{{res.Application_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planner_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    {% if res.Return_same_day == True %}
+                                                    <img src="../../static/icons/check-mark.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% elif res.Return_same_day == False %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{res.Days_Applied}}</td>
+                                                <td>
+                                                    <a href="{% url 'LeaveDetail' res.Application_No %} "
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i></a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="pending">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Application No.</th>
+                                                <th>Status</th>
+                                                <th>Start Date</th>
+                                                <th>Return same day</th>
+                                                <th>Days Applied</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in pending %}
+                                            <tr>
+                                                <td>{{res.Application_No}}</td>
+                                                <td id="rap">{{res.Status}}</td>
+                                                <td id='pending_planner_start_date{{res.Application_No}}'>
+                                                    {{res.Planner_Start_Date}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#pending_planner_start_date{{res.Application_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planner_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    {% if res.Return_same_day == True %}
+                                                    <img src="../../static/icons/check-mark.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% elif res.Return_same_day == False %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{res.Days_Applied}}</td>
+                                                <td>
+                                                    <a href="{% url 'LeaveDetail' res.Application_No %} "
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i></a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Application No.</th>
+                                                <th>Status</th>
+                                                <th>Start Date</th>
+                                                <th>Return same day</th>
+                                                <th>Days Applied</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in res %}
+                                            {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+                                            <tr style="background: #fee36e !important;">
+                                                <td>{{res.Application_No}}</td>
+                                                <td id="rap">{{res.Status}}</td>
+                                                <td id="rejected_planner_start_date{{res.Application_No}}">
+                                                    {{res.Planner_Start_Date}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#rejected_planner_start_date{{res.Application_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planner_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    {% if res.Return_same_day == True %}
+                                                    <img src="../../static/icons/check-mark.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% elif res.Return_same_day == False %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{res.Days_Applied}}</td>
+                                                <td>
+                                                    <!-- <button class="btn btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="edit" data-bs-toggle="modal"
+                                                        data-bs-target="#editLeave{{res.Application_No}}">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button> -->
+                                                    <a href="{% url 'LeaveDetail' res.Application_No %} "
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top" title="View"> View <i
+                                                            class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal Edit Leave -->
+                                                    <div class="modal fade" id="editLeave{{res.Application_No}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Leave
+                                                                        Request <span
+                                                                            class="editSpan">{{res.Application_No}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm" action="{% url 'leave' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2 myForm">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden"
+                                                                                        name="applicationNo"
+                                                                                        value="{{res.Application_No}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">
+                                                                                        Leave Type</label>
+                                                                                    <select
+                                                                                        class="form-select EditLeaveType"
+                                                                                        name="leaveType" required>
+
+                                                                                        <option selected
+                                                                                            value="{{res.Leave_Code}}">
+                                                                                            {{res.Leave_Code}}</option>
+                                                                                        {% for type in leave %}
+                                                                                        {% if type.Leave_Code != res.Leave_Code %}
+                                                                                        <option value="{{type.Code}}">
+                                                                                            {{type.Description}}
+                                                                                        </option>
+                                                                                        {% endif %}
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label"> Leave
+                                                                                        Based on Planner?</label>
+                                                                                    <select
+                                                                                        class="form-select BasedOnPlanners"
+                                                                                        id="" name="BasedOnPlanner"
+                                                                                        required>
+                                                                                        <option selected value="">Select
+                                                                                        </option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row mt-3 EditPlannerStartDateRow"
+                                                                                id="" style="display:none">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">
+                                                                                        Planner Start Date</label>
+                                                                                    <select
+                                                                                        class="form-select EditPlannerStartDate"
+                                                                                        name="plannerStartDate"
+                                                                                        disabled>
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Choose...</option>
+                                                                                        {% for res in plan %}
+                                                                                        <option
+                                                                                            value="{{res.Start_Date}}">
+                                                                                            {{res.Start_Date}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row EditLeaveStartDateRow"
+                                                                                style="display:none">
+                                                                                <div class="col-md-12">
+                                                                                    <label for=""
+                                                                                        class="form-label">Leave Start
+                                                                                        Date:</label>
+                                                                                    <input type="date"
+                                                                                        class="form-control EditLeaveStartDate"
+                                                                                        name="plannerStartDate"
+                                                                                        disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label"> Return
+                                                                                        Same
+                                                                                        Day </label>
+                                                                                    <select
+                                                                                        class="form-select EditReturnSameDay"
+                                                                                        name="isReturnSameDay" required>
+                                                                                        <option selected value="">Select
+                                                                                        </option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row EditdayAppliedRow"
+                                                                                style="display: none;">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Days
+                                                                                        Applied</label>
+                                                                                    <input type="number"
+                                                                                        class="form-control EditdayApplied"
+                                                                                        name="daysApplied"
+                                                                                        placeholder="{{res.Days_Applied}}"
+                                                                                        disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit" id="sasa"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td>{{res.Application_No}}</td>
+                                                <td id="rap">{{res.Status}}</td>
+                                                <td id="open_planner_start_date{{res.Application_No}}">
+                                                    {{res.Planner_Start_Date}}</td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#open_planner_start_date{{res.Application_No}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planner_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    {% if res.Return_same_day == True %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% elif res.Return_same_day == False %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{res.Days_Applied}}</td>
+                                                <td>
+                                                    <!-- <button class="btn btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="edit" data-bs-toggle="modal"
+                                                        data-bs-target="#editLeaves{{res.Application_No}}">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button> -->
+                                                    <a href="{% url 'LeaveDetail' res.Application_No %} "
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top" title="View"> View <i
+                                                            class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal Edit Leave -->
+                                                    <div class="modal fade" id="editLeaves{{res.Application_No}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Leave
+                                                                        Request <span
+                                                                            class="editSpan">{{res.Application_No}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm" action="{% url 'leave' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2">
+
+                                                                            <input type="hidden" name="myAction"
+                                                                                value="modify">
+                                                                            <input type="hidden" name="applicationNo"
+                                                                                value="{{res.Application_No}}">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">
+                                                                                        Leave Type</label>
+                                                                                    <select
+                                                                                        class="form-select EditLeaveType"
+                                                                                        name="leaveType" required>
+                                                                                        <option selected
+                                                                                            value="{{res.Leave_Code}}">
+                                                                                            {{res.Leave_Code}}</option>
+                                                                                        {% for type in leave %}
+                                                                                        {% if type.Leave_Code != res.Leave_Code %}
+                                                                                        <option value="{{type.Code}}">
+                                                                                            {{type.Description}}
+                                                                                        </option>
+                                                                                        {% endif %}
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label"> Leave
+                                                                                        Based on Planner?</label>
+                                                                                    <select
+                                                                                        class="form-select BasedOnPlanners"
+                                                                                        id="" name="BasedOnPlanner"
+                                                                                        required>
+                                                                                        <option value="0" disabled
+                                                                                            selected>--Select--</option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row mt-3 EditPlannerStartDateRow"
+                                                                                id="" style="display:none">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">
+                                                                                        Planner Start Date</label>
+                                                                                    <select
+                                                                                        class="form-select EditPlannerStartDate"
+                                                                                        name="plannerStartDate"
+                                                                                        disabled>
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Choose...</option>
+                                                                                        {% for res in plan %}
+                                                                                        <option
+                                                                                            value="{{res.Start_Date}}">
+                                                                                            {{res.Start_Date}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row EditLeaveStartDateRow"
+                                                                                style="display:none">
+                                                                                <div class="col-md-12">
+                                                                                    <label for=""
+                                                                                        class="form-label">Leave Start
+                                                                                        Date:</label>
+                                                                                    <input type="date"
+                                                                                        class="form-control EditLeaveStartDate"
+                                                                                        name="plannerStartDate"
+                                                                                        disabled>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label"> Return
+                                                                                        Same
+                                                                                        Day </label>
+                                                                                    <select
+                                                                                        class="form-select EditReturnSameDay"
+                                                                                        name="isReturnSameDay" required>
+                                                                                        <option value="0" disabled
+                                                                                            selected>--Select--</option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row EditdayAppliedRow"
+                                                                                style="display: none;">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Days
+                                                                                        Applied</label>
+                                                                                    <input type="number"
+                                                                                        class="form-control EditdayApplied"
+                                                                                        name="daysApplied"
+                                                                                        placeholder="{{res.Days_Applied}}"
+                                                                                        disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit" id="sasa"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </div>
+
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Create leave Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Raise Leave Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm" action="{% url 'leave' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <input type="hidden" name="applicationNo" value="">
+                            <input type="hidden" name="myAction" value="insert">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label"> Leave Type</label>
+                                    <select class="form-select" name="leaveType" required>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        {% for res in leave %}
+                                        <option value="{{res.Code}}">{{res.Description}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <label for="" class="form-label">Leave Start Date:</label>
+                                    <input type="date" class="form-control" name="plannerStartDate" id="LeaveStartDate">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="isReturnSameDay" class="form-label"> Return Same Day</label>
+                                    <select class="form-select" id="isReturnSameDay" name="isReturnSameDay" required>
+                                        <option value="0" disabled selected>--Select--</option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2" id="daysAppliedRow" style="display:none;">
+                                <div class="col-md-12">
+                                    <label for="daysApplied" class="form-label">Days Applied</label>
+                                    <input type="number" class="form-control" id="daysApplied" name="daysApplied"
+                                        disabled>
+                                </div>
+                            </div>
+                            <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                    class="las la-arrow-right submit-icon"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    // Get today's date
+    let today = new Date().toISOString().split('T')[0];
+    // Set the minimum allowed date for the input
+    document.getElementById("LeaveStartDate").min = today;
+    $(document).ready(function () {
+        // Return Same Day on change to display and hide planner start date
+        $('#isReturnSameDay').on('change', function () {
+            if (this.value == "False") {
+                $('#daysAppliedRow').show(1000)
+                $('#daysApplied').prop('disabled', false);
+            } else if (this.value == "True") {
+                $('#daysApplied').prop('disabled', true);
+                $('#daysAppliedRow').hide(1000)
+            }
+        });
+        $('.EditReturnSameDay').on('change', function () {
+            if (this.value == "False") {
+                $('.EditdayAppliedRow').show(1000)
+                $('.EditdayApplied').prop('disabled', false);
+            } else if (this.value == "True") {
+                $('.EditdayApplied').prop('disabled', true);
+                $('.EditdayAppliedRow').hide(1000)
+            }
+        });
+        // Leave type on change to display and hide planner start date
+        $('#BasedOnPlanner').on('change', function () {
+            if (this.value == "True") {
+                $('#plannerStartDateRow').show(1000)
+                $('#plannerStartDate').prop('disabled', false);
+                $('#LeaveStartDateRow').hide(1300)
+                $('#LeaveStartDate').prop('disabled', true);
+            } else {
+                $('#plannerStartDate').prop('disabled', true);
+                $('#plannerStartDateRow').hide(1000);
+                $('#LeaveStartDateRow').show(1300)
+                $('#LeaveStartDate').prop('disabled', false);
+            }
+        });
+        $('.BasedOnPlanners').on('change', function () {
+            if (this.value == "True") {
+                $('.EditPlannerStartDateRow').show(1000)
+                $('.EditPlannerStartDate').prop('disabled', false);
+                $('.EditLeaveStartDateRow').hide(1300)
+                $('.EditLeaveStartDate').prop('disabled', true);
+            } else {
+                $('.EditPlannerStartDate').prop('disabled', true);
+                $('.EditPlannerStartDateRow').hide(1000);
+                $('.EditLeaveStartDateRow').show(1300)
+                $('.EditLeaveStartDate').prop('disabled', false);
+            }
+        });
+    })
+</script>
+
+{% endblock %}

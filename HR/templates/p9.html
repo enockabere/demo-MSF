@@ -1,0 +1,66 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+P9
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumbs text-muted">
+                            P9
+                        </span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <h1 class="heading display-5 pb-3"><img src="../../../static/img/logo/fav.png" width="70px"
+                            class="img-fluid"> P9 Form
+                    </h1>
+                    <form class="myForm needs-validation" action="{% url 'pNine' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">Payment Period</label>
+                                <select class="form-select" name="startDate" required>
+                                    <option selected disabled value="">Select Payment Period</option>
+                                    {% for res in res %}
+                                    <option value="{{res.Starting_Date}}">{{res.Starting_Date|slice:"4" }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-success my-3 w-100">Preview P9</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(document).ready(function () {
+        $("#approveBtn").click(function () {
+            $("#approvalForm").toggle(500)
+        })
+    })
+</script>
+{% endblock %}

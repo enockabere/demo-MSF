@@ -1,0 +1,102 @@
+{% extends "base-html.html" %}
+{% block title %}
+LOGIN
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/css/auth.css">
+<link rel="stylesheet" href="../../static/css/base.css">
+{% endblock %}
+
+{% block content %}
+<section class="n-login">
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div id='n-left' class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="n-icon mx-auto text-center">
+                            <p>
+                                <i class="las la-align-left"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-auto text-center">
+                        <div class="brand">
+                            <h2 class="n-brand">EMPLOYEE SELF SERVICE PORTAL</br> <span class="br-brand">MSF</span>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="l-text mx-auto text-center">
+
+                            <p>
+                                MSF was founded in France in 1971 by a group of doctors and journalists who wanted to
+                                provide medical assistance and speak out about the suffering that they witnessed in
+                                their course of their work.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mx-auto text-center">
+                        <a href="../../static/manual/KMPDC-ESS MANUAL.pdf" download class="btn transparent my-2"
+                            id="sign-up-btn">
+                            Download Manual <i class="las la-arrow-down download-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="n-right1" class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="logo mx-auto text-center">
+                            <img src="../../static/img/logo/2.png" alt="" class="rotate-image img-fluid">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-text">
+                            <div class="pr-3" style="margin-right: 2rem !important;">
+                                {% include 'alerts.html' %}
+                            </div>
+                            <h3>Sign In</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="l-form">
+                            <div class="login-form">
+                                <form action="{% url 'auth' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control" name="username"
+                                            placeholder="Enter Username" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control" name="password"
+                                            placeholder="Enter Password" required="required">
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+
+{% endblock %}

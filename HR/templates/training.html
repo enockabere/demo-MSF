@@ -1,0 +1,644 @@
+{% extends 'offcanvas.html' %}
+{% block title %}
+TRAINING REQUEST
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper general-bg" style="padding-bottom: 5rem;">
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card data-card">
+                    <div class="display-5" style="display: flex; align-items: center; margin: 1rem 0px;">
+                        <img src="../../static/img/logo/logo.webp" width="180px" height="150px" class="img-fluid">
+                        <h4 class="mt-5 mx-3">Training Requests</h4>
+                        <span style="margin-left: auto;">
+                            <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="outline: none; border: none;">
+                                <i class="las la-plus text-white" style="font-size: 15px;"></i> New Training Request
+                            </button>
+                        </span>
+                    </div>
+                    <div class="m-4">
+                        <ul class="nav nav-tabs table-tabs d-flex" id="myTab">
+                            <li class="nav-item flex-fill">
+                                <a href="#home" class="nav-link" data-bs-toggle="tab">Open
+                                    <span class="ml-1  badge rounded-pill olive_icon">
+                                        {{res|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#pending" class="nav-link" data-bs-toggle="tab">Pending Approval
+                                    <span class="ml-1  badge rounded-pill olive_icon">
+                                        {{pending|length}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <a href="#profile" class="nav-link active" data-bs-toggle="tab">Approved
+                                    <span class="ml-1 badge rounded-pill olive_icon">
+                                        {{response|length}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="home">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Request No.</th>
+                                                <th>Request Date</th>
+                                                <th>Adhoc</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>No. Of Days</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in res %}
+                                            {% if res.Rejected_By_Approver == True and res.Status == 'Open' %}
+                                            <tr style="background: #fee36e !important;">
+                                                <td>{{res.Request_No_}}</td>
+                                                <td id="rejected_request_date{{res.Request_No_}}">{{res.Request_Date}}
+                                                </td>
+                                                <td>
+                                                    {% if res.Adhoc == True %}
+                                                    <img src="../../static/icons/check-mark.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% elif res.Adhoc == False %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                {% if res.Adhoc == False %}
+                                                <td id="rejected_planned_start_date{{res.Request_No_}}">
+                                                    {{res.Planned_Start_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                {% if res.Adhoc == False %}
+                                                <td id="rejected_planned_end_date{{res.Request_No_}}">
+                                                    {{res.Planned_End_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if res.Adhoc == False %}
+                                                    {{res.No__Of_Days}}
+                                                    {% else %}
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                    {% endif %}
+                                                </td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#rejected_request_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Request_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#rejected_planned_start_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#rejected_planned_end_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_End_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+
+                                                    <!-- <button class="btn btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="edit" data-bs-toggle="modal"
+                                                        data-bs-target="#edit{{res.Request_No_}}">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button> -->
+                                                    <a href="{% url 'TrainingDetail' res.Request_No_ %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="edit{{res.Request_No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Training
+                                                                        <span
+                                                                            class="editSpan">{{res.Request_No_}}</span>
+
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm needs-validation"
+                                                                        action="{% url 'training_request' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2">
+                                                                            <div class="row mt-3">
+                                                                                <div class="col-md-12">
+                                                                                    <label
+                                                                                        class="form-label">Adhoc</label>
+                                                                                    <select
+                                                                                        class="form-select EditAdhoc"
+                                                                                        name="isAdhoc" required>
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Select
+                                                                                        </option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                    <div class="invalid-feedback">
+                                                                                        Please select a valid option.
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row trainingNeedTTRow"
+                                                                                style="display: none;">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Training
+                                                                                        Need</label>
+                                                                                    <select
+                                                                                        class="form-select trainingNeedTT"
+                                                                                        name="trainingNeed">
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Select Training Need
+                                                                                        </option>
+                                                                                        {% for res in train %}
+                                                                                        <option value="{{res.Code}}">
+                                                                                            {{res.Description}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden"
+                                                                                        name="requestNo"
+                                                                                        value="{{res.Request_No_}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td>{{res.Request_No_}}</td>
+                                                <td id="open_request_date{{res.Request_No_}}">{{res.Request_Date}}</td>
+                                                <td>
+                                                    {% if res.Adhoc == True %}
+                                                    <img src="../../static/icons/check-mark.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% else %}
+                                                    <img src="../../static/icons/cancel.png" height="10" width="10"
+                                                        class="img-fluid" alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                {% if res.Adhoc == False %}
+                                                <td id="open_planned_start_date{{res.Request_No_}}">
+                                                    {{res.Planned_Start_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                {% if res.Adhoc == False %}
+                                                <td id="open_planned_end_date{{res.Request_No_}}">
+                                                    {{res.Planned_End_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if res.Adhoc == False %}
+                                                    {{res.No__Of_Days}}
+                                                    {% else %}
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                    {% endif %}
+                                                </td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#open_request_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Request_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#open_planned_start_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#open_planned_end_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_End_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+
+                                                    <!-- <button class="btn btn-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="edit" data-bs-toggle="modal"
+                                                        data-bs-target="#edit{{res.Request_No_}}">Edit <i
+                                                            class="fas fa-edit"></i>
+                                                    </button> -->
+                                                    <a href="{% url 'TrainingDetail' res.Request_No_ %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click to View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="edit{{res.Request_No_}}"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div
+                                                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        <i class="las la-edit"></i> Edit Training
+                                                                        <span
+                                                                            class="editSpan">{{res.Request_No_}}</span>
+                                                                    </h5>
+                                                                    <button type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="myForm needs-validation"
+                                                                        action="{% url 'training_request' %}"
+                                                                        method="post" novalidate>
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-2">
+                                                                            <div class="row mt-3">
+                                                                                <div class="col-md-12">
+                                                                                    <label
+                                                                                        class="form-label">Adhoc</label>
+                                                                                    <select
+                                                                                        class="form-select EditAdhoc"
+                                                                                        name="isAdhoc" required>
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Select
+                                                                                        </option>
+                                                                                        <option value="True">Yes
+                                                                                        </option>
+                                                                                        <option value="False">No
+                                                                                        </option>
+                                                                                    </select>
+                                                                                    <div class="invalid-feedback">
+                                                                                        Please select a valid option.
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row trainingNeedTTRow"
+                                                                                style="display: none;">
+                                                                                <div class="col-md-12">
+                                                                                    <label class="form-label">Training
+                                                                                        Need</label>
+                                                                                    <select
+                                                                                        class="form-select trainingNeedTT"
+                                                                                        name="trainingNeed">
+                                                                                        <option selected disabled
+                                                                                            value="">
+                                                                                            Select Training Need
+                                                                                        </option>
+                                                                                        {% for res in train %}
+                                                                                        <option value="{{res.Code}}">
+                                                                                            {{res.Description}}</option>
+                                                                                        {% endfor %}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden" name="myAction"
+                                                                                        value="modify">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <input type="hidden"
+                                                                                        name="requestNo"
+                                                                                        value="{{res.Request_No_}}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-success my-3 w-100">Submit</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show active" id="profile">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Request No.</th>
+                                                <th>Request Date</th>
+                                                <th>Adhoc</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>No. Of Days</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in response %}
+                                            <tr>
+                                                <td>{{res.Request_No_}}</td>
+                                                <td id="approved_request_date{{res.Request_No_}}">{{res.Request_Date}}
+                                                </td>
+                                                <td>
+                                                    {% if res.Adhoc == True %}
+                                                    <img src="../../static/icons/check-mark.png" class="img-fluid"
+                                                        alt="icon">
+                                                    {% else %}
+                                                    <img src="../../static/icons/cancel.png" class="img-fluid"
+                                                        alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                {% if res.Adhoc == False %}
+                                                <td id="approved_planned_start_date{{res.Request_No_}}">
+                                                    {{res.Planned_Start_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                {% if res.Adhoc == False %}
+                                                <td id="approved_planned_end_date{{res.Request_No_}}">
+                                                    {{res.Planned_End_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if res.Adhoc == False %}
+                                                    {{res.No__Of_Days}}
+                                                    {% else %}
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                    {% endif %}
+                                                </td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#approved_request_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Request_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#approved_planned_start_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#approved_planned_end_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_End_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'TrainingDetail' res.Request_No_ %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click To View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pending">
+                                <div class="card-body">
+                                    <table id="example"
+                                        class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr id="tops">
+                                                <th id="long">Request No.</th>
+                                                <th>Request Date</th>
+                                                <th>Adhoc</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>No. Of Days</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for res in pending %}
+                                            <tr>
+                                                <td>{{res.Request_No_}}</td>
+                                                <td id="pending_request_date">{{res.Request_Date}}</td>
+                                                <td>
+                                                    {% if res.Adhoc == True %}
+                                                    <img src="../../static/icons/check-mark.png" class="img-fluid"
+                                                        alt="icon">
+                                                    {% else %}
+                                                    <img src="../../static/icons/cancel.png" class="img-fluid"
+                                                        alt="icon">
+                                                    {% endif %}
+                                                </td>
+                                                {% if res.Adhoc == False %}
+                                                <td id="pending_planned_start_date{{res.Request_No_}}">
+                                                    {{res.Planned_Start_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                {% if res.Adhoc == False %}
+                                                <td id="pending_planned_end_date{{res.Request_No_}}">
+                                                    {{res.Planned_End_Date}}
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                </td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if res.Adhoc == False %}
+                                                    {{res.No__Of_Days}}
+                                                    {% else %}
+                                                    <img src="../../static/icons/e1.png" class="img-fluid" alt="">
+                                                    {% endif %}
+                                                </td>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $("#pending_request_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Request_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#pending_planned_start_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_Start_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                        $("#pending_planned_end_date{{res.Request_No_}}")
+                                                            .empty().append(moment(
+                                                                    '{{res.Planned_End_Date}}', "YYYY-MM-DD")
+                                                                .format(
+                                                                    'Do MMM YYYY'));
+                                                    })
+                                                </script>
+                                                <td>
+                                                    <a href="{% url 'TrainingDetail' res.Request_No_ %}"
+                                                        class="btn btn-success btn-icon-text" type="button"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="Click To View"> View <i class="far fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Training Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="myForm" action="{% url 'training_request' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="requestNo" value="">
+                        <input type="hidden" name="myAction" value="insert">
+                        <div class="mb-2">
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <label for="isAdhoc" class="form-label">Adhoc</label>
+                                    <select class="form-select" id="isAdhocT" name="isAdhoc" required>
+                                        <option selected disabled value="0">--Select--</option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2" id="trainingNeedRow" style="display: none;">
+                                <div class="col-md-12">
+                                    <label class="form-label">Training Need</label>
+                                    <select class="form-select" id="trainingNeed" name="trainingNeed" disabled>
+                                        <option selected disabled value="0">--Select Training Need-- </option>
+                                        {% for res in train %}
+                                        <option value="{{res.Code}}">{{res.Description}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="button-88 my-3 w-100">Submit <i
+                                    class="las la-arrow-right submit-icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $('#isAdhocT').on('change', function () {
+            if (this.value == "True") {
+                $("#trainingNeedRow").hide(1000);
+                $('#trainingNeed').prop('disabled', true)
+            } else {
+                $("#trainingNeedRow").show(1000);
+                $('#trainingNeed').prop('disabled', false)
+            }
+        });
+        // Edit Training
+        $('.EditAdhoc').on('change', function () {
+            if (this.value == "True") {
+                $('.trainingNeedTTRow').hide(1000);
+                $('.trainingNeedTT').prop('disabled', true);
+            } else {
+                $(".trainingNeedTTRow").show(1000);
+                $('.trainingNeedTT').prop('disabled', false)
+            }
+        });
+
+    })
+</script>
+{% endblock %}

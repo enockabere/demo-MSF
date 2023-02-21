@@ -1,0 +1,55 @@
+<!-- @format -->
+
+{% extends 'offcanvas.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% block main %}
+<script src="../../../static/css/boot/js/vendor.bundle.base.js"></script>
+<style>
+  .card-dark {
+    background: linear-gradient(to right, #144a85, #919599) !important;
+    color: #fff;
+  }
+</style>
+<section class="dash2">
+  <div class="content-wrapper" style="background-color: #ebf6f5">
+    <div class="row" id="proBanner">
+      <div class="col-12">
+        <span class="d-flex align-items-center purchase-popup">
+          <img src="../../../static/img/logo/fav.png" width="70px" class="img-fluid" alt="" srcset="" />
+          <h2 class="text-dark font-weight-bold" style="margin-left: auto; margin-right: 0">
+            User Manual
+          </h2>
+        </span>
+      </div>
+    </div>
+
+    <!--alert -->
+    {% include 'alerts.html' %}
+
+    <div class="row mt-2 pb-3">
+      <div class="col-md-12">
+        <div class="card p-2" id="dt-card">
+          <div class="card-header">ESS User Manual</div>
+          <div class="card-body card-dark">
+            <h5 class="card-title">Introduction</h5>
+            <p class="card-text">
+              ESS portal contains activities that an employee can access general
+              user activities.
+            </p>
+            <iframe src="../../static/manual/KMPDC-ESS MANUAL.pdf" width="100%" height="900px">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  $(document).ready(function () {
+    $("#approveBtn").click(function () {
+      $("#approvalForm").toggle(500);
+    });
+  });
+</script>
+{% endblock %}

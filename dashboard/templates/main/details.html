@@ -1,0 +1,244 @@
+{% extends 'offcanvas.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% block main %}
+<section class="dash2">
+    <div class="content-wrapper" style="background: #6c8aaf;padding-bottom: 13rem;">
+        <div class="d-xl-flex justify-content-between align-items-start">
+            <h2 class="text-dark font-weight-bold mb-2"> Tender Detail</h2>
+            <div class="d-sm-flex justify-content-xl-between align-items-center mb-2">
+                <div class="dropdown ml-0 ml-md-4 mt-2 mt-lg-0">
+                    <button class="btn bg-white dropdown-toggle p-3 d-flex align-items-center" type="button"
+                        id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                            class="mdi mdi-calendar mr-1"></i>{{today}}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="alert alert-success alert-success" role="alert">
+                    <h4 class="alert-heading">Hello {user} </h4>
+                    <p>
+                        Please Note that, A password will be provided for 2 Envelope Applications
+                        that will be used to submit your financial proposal after Mandatory and technical
+                        evaluation.
+                    </p>
+                    <hr>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-8">
+                <div class="card h-100" id="dt-card">
+                    <div class="card-header">
+                        Tender Description - {{res.Event_No}}
+                    </div>
+                    <div class="card-body" id="dt-body">
+                        <h5 class="card-title mt-4">
+                            {{res.Event_Name}}
+                        </h5>
+                        <p class="card-text">
+                            {{res.Event_Description}}
+                        </p>
+                        <p style="font-weight: bold; color:#25CC88">
+                            Submission Type: <span style="font-weight: normal; color:black">{{type}}</span>
+                        </p>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
+                            Respond To Tender
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Response -
+                                            {{res.Event_No}}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if type != res.Chargeable %}
+                                        <form id="regForm">
+                                            <h3>Evaluation Type: 1 Envelope </h3>
+                                            <!-- One "tab" for each step in the form: -->
+                                            <div class="tab"> <span class="w-name">
+                                                    Mandatory Requirements:
+                                                </span>
+                                                <p>
+                                                    <label for="">Attachment 1:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file1">
+                                                </p>
+                                                <p>
+                                                    <label for="">Attachment 2:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file2">
+                                                </p>
+                                                <p>
+                                                    <label for="">Attachment 3:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file3">
+                                                </p>
+                                            </div>
+                                            <div class="tab"><span class="w-name">
+                                                    Technical Proposal:
+                                                </span>
+                                                <p>
+                                                    <label for="">Attachment 1:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file4">
+                                                </p>
+                                                <p>
+                                                    <label for="">Attachment 2:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file5">
+                                                </p>
+                                                <p>
+                                                    <label for="">Attachment 3:</label>
+                                                    <input type="file" oninput="this.className = ''" name="file6">
+                                                </p>
+                                            </div>
+                                            <div class="tab"> <span class="w-name">
+                                                    Financial Proposal:
+                                                </span>
+                                                <p>
+                                                    <label for="">Amount:</label>
+                                                    <input type="text" class="form-control" name="Kshs"
+                                                        placeholder="Amount">
+                                                </p>
+                                                <p>
+                                                    <label for="" class="form-label">Comment:</label>
+                                                    <textarea class="form-control" rows="3"></textarea>
+                                                </p>
+                                            </div>
+                                            <div style="overflow:auto;">
+                                                <div style="float:right;">
+                                                    <button type="button" id="prevBtn"
+                                                        onclick="nextPrev(-1)">Previous</button>
+                                                    <button type="button" id="nextBtn"
+                                                        onclick="nextPrev(1)">Next</button>
+                                                </div>
+                                            </div>
+                                            <!-- Circles which indicates the steps of the form: -->
+                                            <div style="text-align:center;margin-top:40px;">
+                                                <span class="step"></span>
+                                                <span class="step"></span>
+                                                <span class="step"></span>
+                                            </div>
+                                        </form>
+                                        {% else %}
+                                        <form>
+                                            <h3>Evaluation Type: 2 Envelope </h3>
+                                            <!-- One "tab" for each step in the form: -->
+                                            <div class="mb-2"> <span class="w-name">
+                                                    Mandatory Requirements:
+                                                </span>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="">Attachment 1:</label>
+                                                        <input type="file" class="form-control" name="file1">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="">Attachment 2:</label>
+                                                        <input type="file" class="form-control" name="file2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-2"> <span class="w-name">
+                                                    Technical Requirements:
+                                                </span>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="">Attachment 1:</label>
+                                                        <input type="file" class="form-control" name="file3">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="">Attachment 2:</label>
+                                                        <input type="file" class="form-control" name="file4">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab"> <span class="w-name">
+                                                    Financial Requirements:
+                                                </span>
+                                                <div>
+                                                    <label for="recipient-name" class="col-form-label">Amount:</label>
+                                                    <input type="text" class="form-control" id="recipient-name"
+                                                        placeholder="Ksh">
+                                                    <small class="form-text text-muted">We'll never
+                                                        share
+                                                        your email with anyone else.</small>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="" class="col-form-label">Password</label>
+                                                        <input type="password" class="form-control" id=""
+                                                            placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="" class="col-form-label">Confirm Password</label>
+                                                        <input type="password" class="form-control" id=""
+                                                            placeholder="Password">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Discard</button>
+                                        <button type="button" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-white" id="dt-sm">
+                    <div class="card-header">
+                        Tender Info
+                    </div>
+                    <div class="card-body">
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Status</p> ---------------------- <small
+                                style="display:inline-block">{{res.Status}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Archived</p> ---------------------- <small
+                                style="display:inline-block">{{res.Archived}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Entry No</p> ---------------------- <small
+                                style="display:inline-block">{{res.Entry_No}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Invoicing Method</p> ------------- <small
+                                style="display:inline-block">{{res.Invoicing_Method}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Chargeable</p> ---------------------- <small
+                                style="display:inline-block">{{res.Chargeable}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Amount</p> ---------------------- <small
+                                style="display:inline-block">{{res.Amount}}</small>
+                        </div>
+                        <div class="dt-txt">
+                            <p style="display:inline-block">Event Type</p> ---------------------- <small
+                                style="display:inline-block">{{res.Event_Type}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

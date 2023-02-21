@@ -1,0 +1,315 @@
+{% extends 'offcanvas.html' %}
+
+{% block title %}
+LEAVE PLANNER DETAILS
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block main %}
+<script src="../../static/css/boot/js/vendor.bundle.base.js"></script>
+<section class="dash2">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb shadow-lg  d-flex justify-content-start inner-breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger">
+                            <i class="fa fa-home"></i>
+                            Home</a>
+                    </li>
+                    <li class="breadcrumb-item ">
+                        <a href="{% url 'LeavePlanner' %}" class="breadcrumbs text-dark">
+                            Leave Planner
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                            Leave Planner {{res.No_}}
+                        </span></li>
+                </ol>
+            </div>
+        </div>
+        <div class="d-xl-flex justify-content-end align-items-start">
+            <div class="d-sm-flex justify-content-xl-between align-items-center mb-2">
+                <div class="dropdown ml-0 ml-md-4 mt-2 mt-lg-0">
+                    <button class="btn btn-successs  p-3 d-flex align-items-center" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"><i class="las la-plus"></i> New Leave
+                        Planner Lines
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!--alert -->
+        {% include 'alerts.html' %}
+        <div class="row my-3 gx-2">
+            <div class="col-md-4">
+                <div class="card l-bg-blue-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-file"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Document Date</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0" id="document_date">
+                                    {{res.Date}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card l-bg-green-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Leave Period</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{res.Leave_Period}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card l-bg-orange-dark statCard h-100">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-calendar-times"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Days Planned</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-md-12">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{res.Days_Planned}}
+                                </h2>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div id="accordion" class="accordion-style">
+                    <div class="card mb-3">
+                        <div class="card-header" id="headingThree">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+                                    aria-expanded="true" aria-controls="collapseThree">Leave Planner Lines
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree"
+                            data-bs-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <table id="example"
+                                            class="display table table-striped table-bordered dt-responsive table-responsive-lg"
+                                            style="width:100%">
+                                            <thead>
+                                                <tr id="tops">
+                                                    <th id="long">Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Days</th>
+                                                    <th>Leave Period</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for line in line %}
+                                                <tr>
+                                                    <td id="planner_start_date{{line.Line_No_}}">{{line.Start_Date}}
+                                                    </td>
+                                                    <td id="planner_end_date{{line.Line_No_}}">{{line.End_Date}}</td>
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $("#planner_start_date{{line.Line_No_}}").empty()
+                                                                .append(
+                                                                    moment(
+                                                                        '{{line.Start_Date}}', "YYYY-MM-DD")
+                                                                    .format(
+                                                                        'Do MMM YYYY'));
+                                                            $("#planner_end_date{{line.Line_No_}}").empty()
+                                                                .append(
+                                                                    moment(
+                                                                        '{{line.End_Date}}', "YYYY-MM-DD")
+                                                                    .format(
+                                                                        'Do MMM YYYY'));
+                                                        })
+                                                    </script>
+                                                    <td>{{line.Days}}</td>
+                                                    <td>{{line.Leave_Period}}</td>
+                                                    <td>
+                                                        <button class="btn btn-primary" data-toggle="tooltip"
+                                                            data-placement="top" title="edit" data-bs-toggle="modal"
+                                                            data-bs-target="#staticBackdrop{{line.Line_No_}}"><i
+                                                                class="fas fa-edit"></i>
+                                                        </button>
+                                                        <!-- Edit Modal -->
+                                                        <div class="modal fade" id="staticBackdrop{{line.Line_No_}}"
+                                                            data-bs-backdrop="static" data-bs-keyboard="false"
+                                                            tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                                            aria-hidden="true">
+                                                            <div
+                                                                class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"><i
+                                                                                class="las la-edit"></i> Edit Leave
+                                                                            Planner Line <span
+                                                                                class="editSpan">{{line.Line_No_}}</span>
+                                                                        </h5>
+                                                                        <button type="button"
+                                                                            class="btn-close btn-close-white"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="myForm"
+                                                                            action="{% url 'PlanDetail' line.Document_No_ %}"
+                                                                            method="post" novalidate>
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="lineNo"
+                                                                                value="{{line.Line_No_}}">
+                                                                            <div class="mb-2">
+                                                                                <div class="row my-3">
+                                                                                    <div class="col-md-12">
+                                                                                        <label for=""
+                                                                                            class="form-label">Start
+                                                                                            Date:</label>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <input type="date"
+                                                                                            class="form-control"
+                                                                                            id="-range-start"
+                                                                                            name="startDate"
+                                                                                            placeholder="{{line.Start_Date}}"
+                                                                                            value="{{line.Start_Date}}">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-12">
+                                                                                        <label for=""
+                                                                                            class="form-label">End
+                                                                                            Date:</label>
+
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <input type="date"
+                                                                                            class="form-control"
+                                                                                            name="endDate"
+                                                                                            placeholder="{{line.End_Date}}"
+                                                                                            value="{{line.End_Date}}">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row my-3">
+                                                                                    <div class="col-md-12">
+                                                                                        <input type="hidden"
+                                                                                            name="myAction"
+                                                                                            value="modify">
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <button type="submit" id="sasa"
+                                                                                    class="btn btn-success w-100">Submit</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- End -->
+                                                        <form
+                                                            action="{% url 'FnDeleteLeavePlannerLine' line.Document_No_ %}"
+                                                            method="post" style="display: inline-block;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="lineNo"
+                                                                value="{{line.Line_No_}}">
+                                                            <!-- <button type="submit" class="btn btn-danger"
+                                                                data-toggle="tooltip" data-placement="top"
+                                                                title="Delete"><i class="fas fa-trash-alt"></i>
+                                                            </button> -->
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Leave Planner Lines
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="myForm" action="{% url 'PlanDetail' res.No_ %}" method="post" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="lineNo" value="0">
+                    <div class="mb-2">
+                        <div class="row my-3">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Start
+                                    Date:</label>
+                                <input type="date" class="form-control" name="startDate" placeholder="dd/mm/yyyy"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">End
+                                    Date:</label>
+                                <input type="date" class="form-control" name="endDate" placeholder="dd/mm/yyyy"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-md-12">
+                                <input type="hidden" name="myAction" value="insert">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="sasa" class="btn btn-success w-100">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#document_date").empty()
+            .append(
+                moment(
+                    '{{res.Date}}', "YYYY-MM-DD")
+                .format(
+                    'Do MMM YYYY'));
+        $("#approveBtn").click(function () {
+            $("#approvalForm").toggle(500)
+        })
+    })
+</script>
+{% endblock %}
